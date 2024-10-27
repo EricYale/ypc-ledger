@@ -1,0 +1,24 @@
+{
+  "name": "ypc-ledger",
+  "version": "1.0.0",
+  "description": "Ledger app for Yale Poker Club",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EricYale/ypc-ledger.git"
+  },
+  "author": "Eric Yoon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EricYale/ypc-ledger/issues"
+  },
+  "homepage": "https://github.com/EricYale/ypc-ledger#readme",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "uuid": "^11.0.0"
+  }
+}
