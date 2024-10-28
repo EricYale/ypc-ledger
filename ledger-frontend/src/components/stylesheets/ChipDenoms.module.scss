@@ -1,0 +1,19 @@
+@use "../../shared";
+
+.chip_denoms {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+}
+.denom {
+    font-size: 20px;
+}
+.stack {
+    font-size: 15px;
+}
+.chip_image {
+    width: 80px;
+}

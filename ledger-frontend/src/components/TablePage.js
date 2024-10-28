@@ -6,6 +6,7 @@ import { getUID } from "../helpers/localStorage";
 import Button from "./Button";
 import Input from "./Input";
 import confetti from "canvas-confetti";
+import ChipDenoms from "./ChipDenoms";
 
 const TablePage = () => {
     const {id} = useParams();
@@ -235,6 +236,7 @@ const TablePage = () => {
         <div id={style.table_page}>
             <h1>{blindsDisplay} · {table.gameType} · {table.tableNumber}</h1>
             <h2>You're in for ${currentMoneyIn}</h2>
+            <ChipDenoms denoms={table.denominations} startingStack={table.startingStack} />
             {
                 currentMoneyIn === 0 ? (
                     <Button onClick={buyIn}>

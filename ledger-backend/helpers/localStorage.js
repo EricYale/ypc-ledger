@@ -81,7 +81,7 @@ function saveTable(id) {
     });
 }
 
-function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, bankingMode, denominations }) {
+function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, bankingMode, denominations, startingStack }) {
     const dateStr = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
     const randomUUID = uuid();
     const id = `${dateStr}_${smallBlind}-${bigBlind}_${randomUUID}`;
@@ -100,6 +100,7 @@ function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, b
         players: {},
         transactions: [],
         denominations,
+        startingStack,
     };
     saveTable(id);
     return id;
