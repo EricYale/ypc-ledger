@@ -14,7 +14,7 @@ const tables = {
         "bankingIsSettled": boolean,
         "smallBlind": .10,
         "bigBlind": .20,
-        "bankingMode": "banker" | "transfer",
+        "bankingMode": "banker-prepay" | "banker" | "transfer",
         "players": {
             "abcdef": {
                 "name": "Nick Ribs",
@@ -35,6 +35,12 @@ const tables = {
             "blue": 1,
             "black": 5,
         ],
+        "startingStack": {
+            "white": 10,
+            "red": 10,
+            "blue": 9,
+            "black": 1,
+        },
     }
     */
 };
@@ -94,6 +100,7 @@ function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, b
         denominations,
     };
     saveTable(id);
+    return id;
 }
 
 function getTables() {

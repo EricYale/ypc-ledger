@@ -14,7 +14,7 @@ const TableCard = ({ tableData }) => {
     const blindsDisplay = useMemo(() => {
         if(tableData.smallBlind === 0 && tableData.bigBlind === 0) return "Free play";
         if(Math.max(tableData.bigBlind, tableData.smallBlind) < 1) return `${tableData.smallBlind * 100}¢/${tableData.bigBlind * 100}¢`;
-        return `$${tableData.smallBlind * 100}/$${tableData.bigBlind}`;
+        return `$${tableData.smallBlind}/$${tableData.bigBlind}`;
     }, [tableData]);
 
     return (

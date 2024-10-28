@@ -35,17 +35,3 @@ function initialize() {
 }
 
 initialize();
-createTable({
-    eventName: "Friday Night Live",
-    gameType: "No-limit Hold'Em",
-    tableNumber: "WLH 101 Table 1",
-    smallBlind: 0.1,
-    bigBlind: 0.2,
-    bankingMode: "banker",
-    denominations: {
-        white: 0.1,
-        red: 0.5,
-        blue: 1,
-        black: 5,
-    },
-});

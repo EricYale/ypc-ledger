@@ -1,0 +1,29 @@
+@use "../../shared";
+
+.input_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 10px;
+}
+.label {
+    font-size: 30px;
+}
+.input {
+    // Make an input that has no background and no other visuals,
+    // except for a dotted underline
+
+    background: transparent;
+    border: none;
+    border-bottom: 5px dotted shared.$fg-color;
+    color: shared.$fg-color;
+    padding: 0.5rem 0;
+    width: 100%;
+    display: inline;
+    font-size: 30px;
+    width: 25%;
+
+    &:focus {
+        outline: none;
+    }
+}
