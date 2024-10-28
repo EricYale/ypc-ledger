@@ -1,7 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const createTableRoute = require("./routes/createTable");
 const getTablesRoute = require("./routes/getTables");
-const { rehydrateRAM, createTable } = require("./helpers/localStorage");
+const { rehydrateRAM } = require("./helpers/localStorage");
 const path = require("path");
 const cors = require("cors");
 const joinTableRoute = require("./routes/joinTable");
@@ -10,6 +11,7 @@ const buyOutRoute = require("./routes/buyOut");
 const uploadChipImageRoute = require("./routes/uploadChipImage");
 const fs = require("fs");
 const fileUpload = require("express-fileupload");
+const closeTableRoute = require("./routes/closeTable");
 let app;
 
 const chipImagesFolder = path.join(__dirname, "chip_images");
@@ -36,6 +38,7 @@ function initialize() {
     app.post("/api/buy_in", buyInRoute);
     app.post("/api/buy_out", buyOutRoute);
     app.post("/api/upload_chip_image", uploadChipImageRoute);
+    app.post("/api/close_table", closeTableRoute);
 
     app.use(express.static("public"));
     app.use("/chip_porn", express.static("chip_images"));

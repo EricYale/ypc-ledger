@@ -3,3 +3,4 @@ data/
 chip_images/
 public/
 user_tokens.json
+.env

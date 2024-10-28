@@ -131,6 +131,14 @@ function addTransactionToTable(tableId, transaction) {
     saveTable(tableId);
 }
 
+function closeTable(tableId) {
+    if(!tables[tableId]) {
+        throw new Error(`Table with id ${tableId} does not exist`);
+    }
+    tables[tableId].closedAt = new Date().toISOString();
+    saveTable(tableId);
+}
+
 function getTables() {
     return tables;
 }
@@ -144,4 +152,13 @@ function setUserToken(userId, userToken) {
     fs.writeFileSync(userTokensFile, JSON.stringify(userTokens, null, 2));
 }
 
-module.exports = { createTable, rehydrateRAM, getTables, addUserToTable, addTransactionToTable, getUserToken, setUserToken };
+module.exports = {
+    createTable,
+    rehydrateRAM,
+    getTables,
+    addUserToTable,
+    addTransactionToTable,
+    getUserToken,
+    setUserToken,
+    closeTable,
+};

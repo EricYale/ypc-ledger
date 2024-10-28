@@ -26,7 +26,7 @@ const HomePage = () => {
         })();
     }, []);
 
-    const tableElems = useMemo(() => tables && Object.values(tables).map(table => (
+    const tableElems = useMemo(() => tables && Object.values(tables).filter(t => t.closedAt === null).map(table => (
         <TableCard key={table.id} tableData={table} />
     )), [tables]);
 

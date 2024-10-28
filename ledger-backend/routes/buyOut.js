@@ -24,6 +24,9 @@ async function buyOutRoute(req, res, next) {
     if(!table) {
         return res.status(404).send("Table not found");
     }
+    if(table.closedAt !== null) {
+        return res.status(403).send("Table is closed");
+    }
     try {
         addTransactionToTable(tableId, {
             player: userId,

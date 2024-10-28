@@ -9,4 +9,10 @@ function verifyUserToken(userId, userToken) {
     return getUserToken(userId) === userToken;
 }
 
-module.exports = { verifyUserToken };
+function verifyAdmin(adminPassword) {
+    if(!adminPassword) return false;
+    if(!process.env.ADMIN_PASSWORD) return false;
+    return adminPassword === process.env.ADMIN_PASSWORD;
+}
+
+module.exports = { verifyUserToken, verifyAdmin };

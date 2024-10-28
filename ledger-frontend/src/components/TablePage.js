@@ -169,6 +169,13 @@ const TablePage = () => {
             </div>
         )
     }
+    if(table.closedAt !== null) {
+        return (
+            <div id={style.table_page}>
+                Table is closed
+            </div>
+        )
+    }
 
     if(!(uid in table.players)) {
         return (
