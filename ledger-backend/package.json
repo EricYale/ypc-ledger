@@ -19,6 +19,7 @@
   "homepage": "https://github.com/EricYale/ypc-ledger#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "express-fileupload": "^1.5.1",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "uuid": "^11.0.0"

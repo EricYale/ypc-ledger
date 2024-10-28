@@ -3,11 +3,11 @@ const { addTransactionToTable, getTables } = require("../helpers/localStorage");
 async function buyInRoute(req, res, next) {
     const { userId, tableId } = req.body;
     if(!userId || !tableId) {
-        return res.status(400).json({ error: "Missing required fields" });
+        return res.status(400).send("Missing required fields");
     }
     const table = getTables()[tableId];
     if(!table) {
-        return res.status(404).json({ error: "Table not found" });
+        return res.status(404).send("Table not found");
     }
     try {
         addTransactionToTable(tableId, {
@@ -16,7 +16,7 @@ async function buyInRoute(req, res, next) {
             timestamp: new Date().toISOString(),
         });
     } catch(e) {
-        return res.status(500).json({ error: e.message });
+        return res.status(500).send(e.message);
     }
     return res.status(200).end();
 }
