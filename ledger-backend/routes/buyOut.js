@@ -1,14 +1,18 @@
 const path = require("path");
 const { addTransactionToTable, getTables } = require("../helpers/localStorage");
 const fs = require("fs");
+const { verifyUserToken } = require("../helpers/auth");
 
 async function buyOutRoute(req, res, next) {
-    const { userId, tableId, amount, chipPhoto } = req.body;
+    const { userId, userToken, tableId, amount, chipPhoto } = req.body;
     if(!userId || !tableId || typeof(amount) !== "number" || !chipPhoto) {
         return res.status(400).send("Missing required fields");
     }
     if(amount < 0) {
         return res.status(400).send("Amount must be positive");
+    }
+    if(!verifyUserToken(userId, userToken)) {
+        return res.status(403).send("Invalid user token");
     }
 
     const chipPhotoPath = path.join(__dirname, "..", "/chip_images", chipPhoto);

@@ -19,4 +19,16 @@ function generateUID() {
     return uid;
 }
 
-module.exports = { getUID };
+function getToken() {
+    const token = localStorage.getItem("token");
+    if(!token) return generateToken();
+    return token;
+}
+
+function generateToken() {
+    const token = randomString(32);
+    localStorage.setItem("token", token);
+    return token;
+}
+
+module.exports = { getUID, getToken };

@@ -45,8 +45,10 @@ const tables = {
     }
     */
 };
+let userTokens = {};
 
 const tablesFolder = path.join(__dirname, "..", "data");
+const userTokensFile = path.join(__dirname, "..", "user_tokens.json");
 
 /**
  * Rehydrate RAM from save files
@@ -71,6 +73,13 @@ function rehydrateRAM() {
             });
         });
     });
+
+    try {
+        fs.writeFileSync(userTokensFile, "{}", { flag: 'wx' });
+    } catch(e) {}
+
+    const tokensFile = fs.readFileSync(userTokensFile, "utf-8");
+    userTokens = JSON.parse(tokensFile);
 }
 
 function saveTable(id) {
@@ -126,4 +135,13 @@ function getTables() {
     return tables;
 }
 
-module.exports = { createTable, rehydrateRAM, getTables, addUserToTable, addTransactionToTable };
+function getUserToken(userId) {
+    return userTokens[userId];
+}
+
+function setUserToken(userId, userToken) {
+    userTokens[userId] = userToken;
+    fs.writeFileSync(userTokensFile, JSON.stringify(userTokens, null, 2));
+}
+
+module.exports = { createTable, rehydrateRAM, getTables, addUserToTable, addTransactionToTable, getUserToken, setUserToken };

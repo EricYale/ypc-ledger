@@ -1,9 +1,13 @@
+const { verifyUserToken } = require("../helpers/auth");
 const { addTransactionToTable, getTables } = require("../helpers/localStorage");
 
 async function buyInRoute(req, res, next) {
-    const { userId, tableId } = req.body;
+    const { userId, userToken, tableId } = req.body;
     if(!userId || !tableId) {
         return res.status(400).send("Missing required fields");
+    }
+    if(!verifyUserToken(userId, userToken)) {
+        return res.status(403).send("Invalid user token");
     }
     const table = getTables()[tableId];
     if(!table) {

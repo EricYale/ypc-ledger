@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import style from "./stylesheets/TablePage.module.scss";
 import { API_URL } from "../helpers/consts";
 import { useParams } from "react-router-dom";
-import { getUID } from "../helpers/localStorage";
+import { getUID, getToken } from "../helpers/localStorage";
 import Button from "./Button";
 import Input from "./Input";
 import confetti from "canvas-confetti";
@@ -18,6 +18,7 @@ const TablePage = () => {
     const [buyOutAmount, setBuyOutAmount] = React.useState(0);
     const [successChipUrl, setSuccessChipUrl] = React.useState(null);
     const uid = getUID();
+    const token = getToken();
 
     const fetchTables = async () => {
         let res;
@@ -41,6 +42,7 @@ const TablePage = () => {
                 },
                 body: JSON.stringify({
                     userId: uid,
+                    userToken: token,
                     tableId: id,
                     name,
                     paymentApp,
@@ -64,6 +66,7 @@ const TablePage = () => {
                 },
                 body: JSON.stringify({
                     userId: uid,
+                    userToken: token,
                     tableId: id,
                     name,
                     paymentApp,
@@ -110,6 +113,7 @@ const TablePage = () => {
                 },
                 body: JSON.stringify({
                     userId: uid,
+                    userToken: token,
                     tableId: id,
                     amount: parseFloat(buyOutAmount),
                     chipPhoto: chipUrl,
