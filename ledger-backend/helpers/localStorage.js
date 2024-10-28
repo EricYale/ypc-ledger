@@ -6,7 +6,12 @@ const tables = {
     /*
     "2024-10-31_20_abcdef": {
         "id": string,
+        "eventName": "Friday Night Live",
+        "gameType": "No-limit Hold'Em",
+        "tableNumber": "WLH 101 Table 1"
         "createdAt": string timestamp,
+        "closedAt": string timestamp | null,
+        "bankingIsSettled": boolean,
         "smallBlind": .10,
         "bigBlind": .20,
         "bankingMode": "banker" | "transfer",
@@ -41,6 +46,8 @@ const tablesFolder = path.join(__dirname, "..", "data");
  * @throws {Error}
  */
 function rehydrateRAM() {
+    if (!fs.existsSync(tablesFolder)) fs.mkdirSync(tablesFolder, { recursive: true });
+
     fs.readdir(tablesFolder, (err, files) => {
         if(err) throw new Error("Could not read tables folder");
         
@@ -63,18 +70,22 @@ function saveTable(id) {
     const filePath = path.join(tablesFolder, `${id}.json`);
     
     fs.writeFile(filePath, JSON.stringify(tables[id], null, 2, { flag: "w"}), (err) => {
-        console.error(err)
         if(err) throw new Error(`Could not save table ${id}`);
     });
 }
 
-function createTable({ smallBlind,bigBlind, bankingMode, denominations }) {
+function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, bankingMode, denominations }) {
     const dateStr = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
     const randomUUID = uuid();
     const id = `${dateStr}_${smallBlind}-${bigBlind}_${randomUUID}`;
 
     tables[id] = {
+        eventName,
+        gameType,
+        tableNumber,
         createdAt: new Date().toISOString(),
+        closedAt: null,
+        bankingIsSettled: false,
         smallBlind,
         bigBlind,
         bankingMode,
@@ -85,4 +96,8 @@ function createTable({ smallBlind,bigBlind, bankingMode, denominations }) {
     saveTable(id);
 }
 
-module.exports = { createTable, rehydrateRAM };
+function getTables() {
+    return tables;
+}
+
+module.exports = { createTable, rehydrateRAM, getTables };

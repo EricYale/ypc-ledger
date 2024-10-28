@@ -1,10 +1,11 @@
 {
-  "name": "ypc-ledger",
+  "name": "ledger-backend",
   "version": "1.0.0",
   "description": "Ledger app for Yale Poker Club",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "PORT=1337 node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/EricYale/ypc-ledger#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "uuid": "^11.0.0"

@@ -1,0 +1,18 @@
+@use "../../shared";
+
+#home_page {
+    color: shared.$fg-color;
+    @include shared.rails;
+    text-align: center;
+}
+
+#tables_container {
+    margin-top: 50px;
+}
+
+#logo {
+    max-height: 20vh;
+    max-width: 100%;
+    margin-top: 5vh;
+    margin-bottom: 10vh;
+}
