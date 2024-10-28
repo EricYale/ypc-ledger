@@ -4,6 +4,8 @@ const getTablesRoute = require("./routes/getTables");
 const { rehydrateRAM, createTable } = require("./helpers/localStorage");
 const path = require("path");
 const cors = require("cors");
+const joinTableRoute = require("./routes/joinTable");
+const buyInRoute = require("./routes/buyIn");
 
 let app;
 
@@ -23,6 +25,8 @@ function initialize() {
 
     app.post("/api/create_table", createTableRoute);
     app.get("/api/get_tables", getTablesRoute);
+    app.post("/api/join_table", joinTableRoute);
+    app.post("/api/buy_in", buyInRoute);
     app.use(express.static("public"));
     app.all("*", (req, res) => { // Redirect other routes to single page web app
         res.sendFile(path.resolve("public", "index.html"));

@@ -1,12 +1,12 @@
 import React from "react";
 import style from "./stylesheets/Input.module.scss";
 
-const Input = ({ type, placeholder, value, onChange, label }) => {
+const Input = ({ type, placeholder, value, onChange, label, largeInput }) => {
     return (
         <div className={style.input_container}>
         <p className={style.label}>{label}</p>
         <input
-            className={style.input}
+            className={`${style.input} ${largeInput ? style.large : ""}`}
             type={type || "text"}
             placeholder={placeholder}
             value={value}

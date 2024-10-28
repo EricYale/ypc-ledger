@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import style from "./stylesheets/TableCard.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faRefresh } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const TableCard = ({ tableData }) => {
     const cardClass = useMemo(() => {
@@ -18,14 +19,16 @@ const TableCard = ({ tableData }) => {
     }, [tableData]);
 
     return (
-        <div className={`${style.table_card} ${cardClass}`}>
-            <p className={style.event_name}>
-                <FontAwesomeIcon icon={faCircle} />
-                {tableData.eventName}
-            </p>
-            <h2>{blindsDisplay} · {tableData.gameType} · {tableData.tableNumber}</h2>
-            <p className={style.date}>October 31, 2024</p>
-        </div>
+        <Link to={`/table/${tableData.id}`} className={style.link}>
+            <div className={`${style.table_card} ${cardClass}`}>
+                <p className={style.event_name}>
+                    <FontAwesomeIcon icon={faCircle} />
+                    {tableData.eventName}
+                </p>
+                <h2>{blindsDisplay} · {tableData.gameType} · {tableData.tableNumber}</h2>
+                <p className={style.date}>October 31, 2024</p>
+            </div>
+        </Link>
     );
 }
 

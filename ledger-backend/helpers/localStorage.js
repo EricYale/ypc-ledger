@@ -18,7 +18,8 @@ const tables = {
         "players": {
             "abcdef": {
                 "name": "Nick Ribs",
-                "paymentApp": "@nickribs"
+                "paymentApp": "@nickribs",
+                "email": "nickribs@gmail.com",
             },
         },
         "transactions": [
@@ -86,6 +87,7 @@ function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, b
     const id = `${dateStr}_${smallBlind}-${bigBlind}_${randomUUID}`;
 
     tables[id] = {
+        id,
         eventName,
         gameType,
         tableNumber,
@@ -103,8 +105,24 @@ function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, b
     return id;
 }
 
+function addUserToTable(tableId, userId, user) {
+    if (!tables[tableId]) {
+        throw new Error(`Table with id ${tableId} does not exist`);
+    }
+    tables[tableId].players[userId] = user;
+    saveTable(tableId);
+}
+
+function addTransactionToTable(tableId, transaction) {
+    if (!tables[tableId]) {
+        throw new Error(`Table with id ${tableId} does not exist`);
+    }
+    tables[tableId].transactions.push(transaction);
+    saveTable(tableId);
+}
+
 function getTables() {
     return tables;
 }
 
-module.exports = { createTable, rehydrateRAM, getTables };
+module.exports = { createTable, rehydrateRAM, getTables, addUserToTable, addTransactionToTable };

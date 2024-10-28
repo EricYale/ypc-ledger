@@ -1,0 +1,7 @@
+@use "../../shared";
+
+#table_page {
+    color: shared.$fg-color;
+    @include shared.rails;
+    text-align: center;
+}

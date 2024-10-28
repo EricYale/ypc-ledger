@@ -6,9 +6,10 @@ import { API_URL } from "../helpers/consts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Input from "./Input";
+import Button from "./Button";
 
 const HomePage = () => {
-    const [tables, setTables] = React.useState([]);
+    const [tables, setTables] = React.useState(null);
     const [showingCreateModal, setShowingCreateModal] = React.useState(false);
 
     useEffect(() => {
@@ -25,7 +26,7 @@ const HomePage = () => {
         })();
     }, []);
 
-    const tableElems = useMemo(() => Object.values(tables).map(table => (
+    const tableElems = useMemo(() => tables && Object.values(tables).map(table => (
         <TableCard key={table.id} tableData={table} />
     )), [tables]);
 
@@ -34,6 +35,14 @@ const HomePage = () => {
             <FontAwesomeIcon icon={faPlus} />
         </button>
     );
+
+    if(!tables) {
+        return (
+            <div id={style.home_page}>
+                Loading...
+            </div>
+        );
+    }
 
     return (
         <div id={style.home_page}>
@@ -101,21 +110,21 @@ const CreateTableModal = () => {
                 value={tableNumber}
                 onChange={e => setTableNumber(e.target.value)}
             />
-            <button onClick={() => createTable("free")}>
+            <Button onClick={() => createTable("free")}>
                 Create free table
-            </button>
-            <button onClick={() => createTable(".05/.10")}>
+            </Button>
+            <Button onClick={() => createTable(".05/.10")}>
                 Create 5¢/10¢ table
-            </button>
-            <button onClick={() => createTable(".10/.20")}>
+            </Button>
+            <Button onClick={() => createTable(".10/.20")}>
                 Create 10¢/20¢ table
-            </button>
-            <button onClick={() => createTable(".25/.50")}>
+            </Button>
+            <Button onClick={() => createTable(".25/.50")}>
                 Create 25¢/50¢ table
-            </button>
-            <button onClick={() => createTable("1/2")}>
+            </Button>
+            <Button onClick={() => createTable("1/2")}>
                 Create $1/$2 table
-            </button>
+            </Button>
         </div>
     );
 };
