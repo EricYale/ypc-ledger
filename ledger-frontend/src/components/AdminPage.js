@@ -5,12 +5,13 @@ import Button from "./Button";
 import { API_URL } from "../helpers/consts";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faX } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faImage, faX } from "@fortawesome/free-solid-svg-icons";
 
 const AdminPage = () => {
     const {id} = useParams();
     const [tables, setTables] = React.useState(null);
     const [password, setPassword ] = React.useState("");
+    const [bankerPaymentApp, setBankerPaymentApp] = React.useState("");
     const [passwordEntered, setPasswordEntered] = React.useState(false);
 
     const fetchTables = async () => {
@@ -70,7 +71,26 @@ const AdminPage = () => {
     })();
 
     const sendEmails = async () => {
-
+        const isBankerMode = table.bankingMode === "banker" || table.bankingMode === "banker-prepay";
+        if(!bankerPaymentApp && isBankerMode) return;
+        setTables(null);
+        try {
+            await fetch(API_URL + "/api/send_emails", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tableId: id,
+                    adminPassword: password,
+                    bankerPaymentApp,
+                }),
+            });
+        } catch(e) {
+            console.error("Could not send emails:", e);
+            return;
+        }
+        await fetchTables();
     }
 
     const closeTable = async () => {
@@ -100,17 +120,34 @@ const AdminPage = () => {
                 id: playerId,
                 amount: table.transactions
                     .filter(i => i.player === playerId)
-                    .reduce((acc, curr) => acc + curr.amount, 0)
+                    .reduce((acc, curr) => acc + curr.amount, 0),
+                in: table.transactions
+                    .filter(i => i.player === playerId)
+                    .filter(i => i.amount > 0)
+                    .reduce((acc, curr) => acc + curr.amount, 0),
+                out: table.transactions
+                    .filter(i => i.player === playerId)
+                    .filter(i => i.amount < 0)
+                    .reduce((acc, curr) => acc + curr.amount, 0),
             }
         })
         .sort((a, b) => a.amount - b.amount);
 
     const ledgerElems = ledger.map(player => {
+        const photos = table.transactions
+            .filter(i => i.player === player.id)
+            .filter(i => i.chipPhoto != null)
+            .map(i => (
+                <a className={style.link} href={API_URL + "/chip_porn/" + i.chipPhoto} target="_blank" rel="noopener noreferrer">
+                    <FontAwesomeIcon icon={faImage} />
+                </a>
+            ))
         return (
             <p key={player.id} style={{color: player.amount > 0 ? "#FF0000" : "#00FF00"}}>
                 {player.name} • {player.paymentApp} • {player.email}:&nbsp;
-                {player.amount > 0 ? "Owes" : "Won"}&nbsp;
-                ${Math.abs(player.amount)}
+                {player.amount > 0 ? "Lost" : "Won"}&nbsp;
+                ${Math.abs(player.amount)} (in ${player.in} / out ${-player.out})
+                {photos}
             </p>
         )
     });
@@ -141,10 +178,23 @@ const AdminPage = () => {
                 ) 
             }
             {
-                ledgerSumsToZero && (
-                    <Button onClick={sendEmails}>
-                        Send emails
-                    </Button>
+                ledgerSumsToZero && !table.bankingIsSettled && (
+                    <>
+                        {
+                            (table.bankingMode === "banker" || table.bankingMode === "banker-prepay") && (
+                                <Input
+                                    label="Banker Venmo & Zelle"
+                                    type="text"
+                                    placeholder="@nickribs"
+                                    value={bankerPaymentApp}
+                                    onChange={(e) => setBankerPaymentApp(e.target.value)}
+                                />
+                            )
+                        }
+                        <Button onClick={sendEmails}>
+                            Send emails
+                        </Button>
+                    </>
                 )
             }
         </div>

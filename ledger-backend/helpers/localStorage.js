@@ -138,6 +138,13 @@ function closeTable(tableId) {
     tables[tableId].closedAt = new Date().toISOString();
     saveTable(tableId);
 }
+function setSettled(tableId) {
+    if(!tables[tableId]) {
+        throw new Error(`Table with id ${tableId} does not exist`);
+    }
+    tables[tableId].bankingIsSettled = true;
+    saveTable(tableId);
+}
 
 function getTables() {
     return tables;
@@ -161,4 +168,5 @@ module.exports = {
     getUserToken,
     setUserToken,
     closeTable,
+    setSettled,
 };

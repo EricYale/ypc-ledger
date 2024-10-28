@@ -12,6 +12,7 @@ const uploadChipImageRoute = require("./routes/uploadChipImage");
 const fs = require("fs");
 const fileUpload = require("express-fileupload");
 const closeTableRoute = require("./routes/closeTable");
+const sendEmailsRoute = require("./routes/sendEmails");
 let app;
 
 const chipImagesFolder = path.join(__dirname, "chip_images");
@@ -39,6 +40,7 @@ function initialize() {
     app.post("/api/buy_out", buyOutRoute);
     app.post("/api/upload_chip_image", uploadChipImageRoute);
     app.post("/api/close_table", closeTableRoute);
+    app.post("/api/send_emails", sendEmailsRoute);
 
     app.use(express.static("public"));
     app.use("/chip_porn", express.static("chip_images"));

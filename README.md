@@ -3,8 +3,9 @@ Yale Poker Club ledger app
 
 ## How to run
 1. Copy `ledger-backend/.env.template` to `ledger-backend/.env` and fill in the required environment variables
-2. `cd ledger-frontend`, `npm install`, `npm start`
-3. `cd ledger-backend`, `npm install`, `npm run dev`
+2. Download your AWS config file into `ledger-backend/aws-config.json`
+3. `cd ledger-frontend`, `npm install`, `npm start`
+4. `cd ledger-backend`, `npm install`, `npm run dev`
 
 ## Deployment instructions
 - To successfully run on port 80, you'll have to follow [these instructions](https://stackoverflow.com/questions/60372618/nodejs-listen-eacces-permission-denied-0-0-0-080)
