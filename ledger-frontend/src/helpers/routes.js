@@ -1,6 +1,7 @@
 import AdminPage from "../components/AdminPage";
 import AdminPasswordEntryPage from "../components/AdminPasswordEntryPage";
 import HomePage from "../components/HomePage";
+import TableNumberRedirectPage from "../components/TableNumberRedirectPage";
 import TablePage from "../components/TablePage";
 
 const ROUTES = [
@@ -19,6 +20,10 @@ const ROUTES = [
     {
         path: "/pw",
         element: <AdminPasswordEntryPage />,
+    },
+    {
+        path: "/:tableNumber",
+        element: <TableNumberRedirectPage />,
     },
 ];
 

@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import style from "./stylesheets/HomePage.module.scss";
 import Logo from "../resources/logo_white.png";
 import TableCard from "./TableCard";
 import { API_URL } from "../helpers/consts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import Input from "./Input";
 import Button from "./Button";
 import { getSavedAdminPassword } from "../helpers/localStorage";
+import Dropdown from "./Dropdown";
 
 const HomePage = () => {
     const [tables, setTables] = React.useState(null);
@@ -34,15 +34,22 @@ const HomePage = () => {
         })();
     }, []);
 
-    const tableElems = useMemo(() => tables && Object.values(tables).filter(t => t.closedAt === null).map(table => (
-        <TableCard key={table.id} tableData={table} />
-    )), [tables]);
+    const tableElems = useMemo(() => 
+        tables && Object.values(tables)
+            .filter(t => t.closedAt === null)
+            .sort((a, b) => a.tableNumber.localeCompare(b.tableNumber))
+            .map(table => (
+                <TableCard key={table.id} tableData={table} />
+            )
+    ), [tables]);
 
     const showModalButton = password && (
         <button id={style.create_table_button} onClick={() => setShowingCreateModal(true)}>
             <FontAwesomeIcon icon={faPlus} />
         </button>
     );
+
+    const usedTableNumbers = useMemo(() => tables && Object.values(tables).map(t => t.tableNumber), [tables]);
 
     if(!tables) {
         return (
@@ -64,20 +71,46 @@ const HomePage = () => {
             <div id={style.tables_container}>
                 { tableElems }
                 { !showingCreateModal && showModalButton }
-                { showingCreateModal && <CreateTableModal setError={setError} /> }
+                { showingCreateModal && (
+                    <CreateTableModal setError={setError} usedTableNumbers={usedTableNumbers} />
+                )}
             </div>
         </div>
     )
 };
 
-const CreateTableModal = ({ setError }) => {
-    const [roomNumber, setRoomNumber] = React.useState("WLH 003");
-    const [tableNumber, setTableNumber] = React.useState("1");
+const CreateTableModal = ({ setError, usedTableNumbers }) => {
+    const TABLE_NUMBER_OPTIONS = [
+        {value: "", label: "Select..."},
+        { value: "A", label: "Table A" },
+        { value: "B", label: "Table B" },
+        { value: "C", label: "Table C" },
+        { value: "D", label: "Table D" },
+        { value: "E", label: "Table E" },
+        { value: "F", label: "Table F" },
+    ];
+    const BLINDS_OPTIONS = [
+        { value: ".05/.10", label: "5¢/10¢" },
+        { value: ".10/.20", label: "10¢/20¢" },
+        { value: ".25/.50", label: "25¢/50¢" },
+        { value: "1/2", label: "$1/$2" },
+    ];
+    const BANKING_OPTIONS = [
+        { value: "banker-prepay", label: "Banker (prepay)" },
+        // { value: "banker", label: "Banker (pay after)" },
+        { value: "transfer", label: "Direct transfers" },
+    ];
+
+    const tableNumberOptionsFiltered = TABLE_NUMBER_OPTIONS.filter(tn => !usedTableNumbers.includes(tn.value));
+
+    const [tableNumber, setTableNumber] = React.useState("");
+    const [blinds, setBlinds] = React.useState(".05/.10");
+    const [bankingMode, setBankingMode] = React.useState("banker-prepay");
     const [loading, setLoading] = React.useState(false);
     const password = getSavedAdminPassword();
 
-    const createTable = async (blindsString) => {
-        if(roomNumber === "" || tableNumber === "") return;
+    const createTable = async () => {
+        if(!tableNumber || !blinds || !bankingMode) return;
         setLoading(true);
         const weekday = new Date().toLocaleString('en-us', {  weekday: 'long' });
         let res;
@@ -89,9 +122,9 @@ const CreateTableModal = ({ setError }) => {
                 },
                 body: JSON.stringify({
                     eventName: `${weekday} Night Live`,
-                    roomNumber,
                     tableNumber,
-                    blinds: blindsString,
+                    blinds,
+                    bankingMode,
                     adminPassword: password,
                 }),
             });
@@ -119,32 +152,26 @@ const CreateTableModal = ({ setError }) => {
     return (
         <div id={style.create_table_modal}>
             <h1>Start a table</h1>
-            <Input
-                label="Room #"
-                placeholder="WLH 003"
-                value={roomNumber}
-                onChange={e => setRoomNumber(e.target.value)}
-            />
-            <Input
+            <Dropdown
                 label="Table #"
-                placeholder="1"
-                value={tableNumber}
-                onChange={e => setTableNumber(e.target.value)}
+                options={tableNumberOptionsFiltered}
+                selected={tableNumber}
+                onSelectedChange={setTableNumber}
             />
-            <Button onClick={() => createTable("free")}>
-                Create free table
-            </Button>
-            <Button onClick={() => createTable(".05/.10")}>
-                Create 5¢/10¢ table
-            </Button>
-            <Button onClick={() => createTable(".10/.20")}>
-                Create 10¢/20¢ table
-            </Button>
-            <Button onClick={() => createTable(".25/.50")}>
-                Create 25¢/50¢ table
-            </Button>
-            <Button onClick={() => createTable("1/2")}>
-                Create $1/$2 table
+            <Dropdown
+                label="Blinds"
+                options={BLINDS_OPTIONS}
+                selected={blinds}
+                onSelectedChange={setBlinds}
+            />
+            <Dropdown
+                label="Banking mode"
+                options={BANKING_OPTIONS}
+                selected={bankingMode}
+                onSelectedChange={setBankingMode}
+            />
+            <Button onClick={createTable}>
+                Create table
             </Button>
         </div>
     );

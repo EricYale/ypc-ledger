@@ -66,7 +66,7 @@ async function sendEmailsForPrebank(table) {
             <html>
                 <body>
                     <h1>Yale Poker Club</h1>
-                    <h2>Thanks for playing at ${table.eventName}, ${table.tableNumber}</h2>
+                    <h2>Thanks for playing at ${table.eventName}, Table ${table.tableNumber}</h2>
                     <p>
                         <b>In for:</b> $${ins[playerId]}<br />
                         <b>Out for:</b> $${outs[playerId]}<br />
@@ -132,7 +132,7 @@ async function sendEmailsForTransfer(table) {
             <html>
                 <body>
                     <h1>Yale Poker Club</h1>
-                    <h2>Thanks for playing at ${table.eventName}, ${table.tableNumber}</h2>
+                    <h2>Thanks for playing at ${table.eventName}, Table ${table.tableNumber}</h2>
                     <p>
                         <b>In for:</b> $${ins[playerId]}<br />
                         <b>Out for:</b> $${outs[playerId]}<br />

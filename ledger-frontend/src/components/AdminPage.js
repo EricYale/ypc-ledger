@@ -161,7 +161,7 @@ const AdminPage = () => {
 
     return (
         <div id={style.admin_page}>
-            <h1>{blindsDisplay} · {table.gameType} · {table.tableNumber}</h1>
+            <h1>{blindsDisplay} · {table.gameType} · Table {table.tableNumber}</h1>
             {
                 error && <p className={style.error}>{error}</p>
             }

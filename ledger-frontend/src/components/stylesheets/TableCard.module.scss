@@ -26,13 +26,13 @@
     transition: background-color 0.3s;
     cursor: pointer;
 
-    &.no_stakes {
+    &.no_stakes { // We don't have no stakes anymore
         border-color: #828282;
         background-image: linear-gradient(to bottom right, lighten(#515151, 20%), #515151);
     }
     &.low_stakes {
-        border-color: #33ff00;
-        background-image: linear-gradient(to bottom right, lighten(#003501, 20%), #003501);
+        border-color: #828282;
+        background-image: linear-gradient(to bottom right, lighten(#515151, 20%), #515151);
     }
     &.mid_stakes {
         border-color: #2200ff;

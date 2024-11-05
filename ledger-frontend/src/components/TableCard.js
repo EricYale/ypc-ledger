@@ -25,7 +25,7 @@ const TableCard = ({ tableData }) => {
                     <FontAwesomeIcon icon={faCircle} />
                     {tableData.eventName}
                 </p>
-                <h2>{blindsDisplay} · {tableData.gameType} · {tableData.tableNumber}</h2>
+                <h2>{blindsDisplay} · {tableData.gameType} · Table {tableData.tableNumber}</h2>
                 <p className={style.date}>October 31, 2024</p>
             </div>
         </Link>

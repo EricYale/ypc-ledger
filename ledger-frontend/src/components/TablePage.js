@@ -276,7 +276,7 @@ const TablePage = () => {
 
     return (
         <div id={style.table_page}>
-            <h1>{blindsDisplay} · {table.gameType} · {table.tableNumber}</h1>
+            <h1>{blindsDisplay} · {table.gameType} · Table {table.tableNumber}</h1>
             <h2>You're in for ${currentMoneyIn}</h2>
             <ChipDenoms denoms={table.denominations} startingStack={table.startingStack} />
             {

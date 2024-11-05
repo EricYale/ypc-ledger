@@ -8,7 +8,7 @@ const tables = {
         "id": string,
         "eventName": "Friday Night Live",
         "gameType": "No-limit Hold'Em",
-        "tableNumber": "WLH 101 Table 1"
+        "tableNumber": "A" | "B" | "C", etc
         "createdAt": string timestamp,
         "closedAt": string timestamp | null,
         "bankingIsSettled": boolean,

@@ -3,22 +3,21 @@ const { BLINDS } = require("../helpers/blinds");
 const { createTable } = require("../helpers/localStorage");
 
 async function createTableRoute(req, res, next) {
-    const { eventName, roomNumber, tableNumber, blinds, adminPassword } = req.body;
-    if(!eventName || !roomNumber || !tableNumber || !blinds) {
-        return res.status(400).json({ error: "Missing required fields" });
+    const { eventName, blinds, adminPassword, tableNumber, bankingMode } = req.body;
+    if(!eventName || !blinds || !tableNumber || !bankingMode) {
+        return res.status(400).send("Missing required fields");
     }
     if(!verifyAdmin(adminPassword)) return res.status(403).send("Wrong admin password!");
     if(!(blinds in BLINDS)) {
-        return res.status(400).json({ error: "Invalid blinds string" });
+        return res.status(400).send("Invalid blinds string");
     }
     
     const { smallBlind, bigBlind, startingStack, denoms } = BLINDS[blinds];
-    const bankingMode = bigBlind > 0.5 ? "transfer" : "banker-prepay";
 
     const id = createTable({
         eventName: eventName,
         gameType: "NLH",
-        tableNumber: `${roomNumber} · Table ${tableNumber}`,
+        tableNumber,
         smallBlind,
         bigBlind,
         bankingMode,
