@@ -12,8 +12,8 @@ const tables = {
         "createdAt": string timestamp,
         "closedAt": string timestamp | null,
         "bankingIsSettled": boolean,
-        "smallBlind": .10,
-        "bigBlind": .20,
+        "smallBlind": 10,
+        "bigBlind": 20,
         "bankingMode": "banker-prepay" | "banker" | "transfer",
         "players": {
             "abcdef": {
@@ -86,7 +86,10 @@ function saveTable(id) {
     const filePath = path.join(tablesFolder, `${id}.json`);
     
     fs.writeFile(filePath, JSON.stringify(tables[id], null, 2, { flag: "w"}), (err) => {
-        if(err) throw new Error(`Could not save table ${id}`);
+        if(err) {
+            console.error(err);
+            throw new Error(`Could not save table ${id}`);
+        }
     });
 }
 

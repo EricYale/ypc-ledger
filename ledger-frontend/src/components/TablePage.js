@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import style from "./stylesheets/TablePage.module.scss";
-import { API_URL } from "../helpers/consts";
+import { API_URL, blindsDisplay, displayCents, toCents } from "../helpers/consts";
 import { useParams } from "react-router-dom";
 import { getUID, getToken } from "../helpers/localStorage";
 import Button from "./Button";
@@ -101,6 +101,7 @@ const TablePage = () => {
     const buyOut = async () => {
         const chipPhoto = fileRef.current.files[0];
         if(!chipPhoto) return;
+        const buyOutCents = toCents(parseFloat(buyOutAmount));
         const formData = new FormData();
         formData.append("chipImage", chipPhoto);
 
@@ -134,7 +135,7 @@ const TablePage = () => {
                     userId: uid,
                     userToken: token,
                     tableId: id,
-                    amount: parseFloat(buyOutAmount),
+                    amount: buyOutCents,
                     chipPhoto: chipUrl,
                 }),
             });
@@ -164,11 +165,14 @@ const TablePage = () => {
 
     const fileRef = useRef(null);
 
+    const buyOutCents = toCents(parseFloat(buyOutAmount));
+
     if(successChipUrl) {
         return (
             <div id={style.table_page}>
                 <h1>Thanks for playing!</h1>
-                <h2>You bought out for ${buyOutAmount}</h2>
+                <h2>You bought out for ${displayCents(buyOutCents)}</h2>
+                <p>You will soon receive an email with instructions to settle earnings/losses.</p>
                 <img src={API_URL + "/chip_porn/" + successChipUrl} id={style.chip_image} alt="Your chips" />
             </div>
         )
@@ -245,11 +249,7 @@ const TablePage = () => {
         .filter(i => i.player === uid)
         .reduce( (acc, curr) => acc + curr.amount, 0);
 
-    const blindsDisplay = (() => {
-        if(table.smallBlind === 0 && table.bigBlind === 0) return "Free play";
-        if(Math.max(table.bigBlind, table.smallBlind) < 1) return `${table.smallBlind * 100}¢/${table.bigBlind * 100}¢`;
-        return `$${table.smallBlind}/$${table.bigBlind}`;
-    })();
+    const blindsText = blindsDisplay(table);
 
     const buyOutUI = (
         <div id={style.buy_out_modal}>
@@ -276,8 +276,14 @@ const TablePage = () => {
 
     return (
         <div id={style.table_page}>
-            <h1>{blindsDisplay} · {table.gameType} · Table {table.tableNumber}</h1>
-            <h2>You're in for ${currentMoneyIn}</h2>
+            <h1>{blindsText} · {table.gameType} · Table {table.tableNumber}</h1>
+            {
+                currentMoneyIn > 0 ? (
+                    <h2>You're in for ${displayCents(currentMoneyIn)}</h2>
+                ) : (
+                    <h2>You've won ${displayCents(-currentMoneyIn)}</h2>
+                )
+            }
             <ChipDenoms denoms={table.denominations} startingStack={table.startingStack} />
             {
                 error && <p className={style.error}>{error}</p>
@@ -285,12 +291,12 @@ const TablePage = () => {
             {
                 currentMoneyIn === 0 ? (
                     <Button onClick={buyIn}>
-                        Buy in for ${table.bigBlind * 100}
+                        Buy in for ${displayCents(table.bigBlind * 100)}
                     </Button>
                 ) : (
                     <>
                         <Button onClick={buyIn}>
-                            Top up for ${table.bigBlind * 100}
+                            Top up for ${displayCents(table.bigBlind * 100)}
                         </Button>
                         {
                             !showBuyOutUI && (

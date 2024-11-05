@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import style from "./stylesheets/AdminPage.module.scss";
 import Input from "./Input";
 import Button from "./Button";
-import { API_URL } from "../helpers/consts";
+import { API_URL, blindsDisplay, displayCents } from "../helpers/consts";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faImage, faX } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCircleCheck, faCircleXmark, faImage, faX } from "@fortawesome/free-solid-svg-icons";
 import { getSavedAdminPassword } from "../helpers/localStorage";
 
 const AdminPage = () => {
@@ -52,15 +52,11 @@ const AdminPage = () => {
         )
     }
 
-    const blindsDisplay = (() => {
-        if(table.smallBlind === 0 && table.bigBlind === 0) return "Free play";
-        if(Math.max(table.bigBlind, table.smallBlind) < 1) return `${table.smallBlind * 100}¢/${table.bigBlind * 100}¢`;
-        return `$${table.smallBlind}/$${table.bigBlind}`;
-    })();
+    const blindsText = blindsDisplay(table);
 
+    console.log(table, blindsText)
     const sendEmails = async () => {
-        const isBankerMode = table.bankingMode === "banker" || table.bankingMode === "banker-prepay";
-        if(!bankerPaymentApp && isBankerMode) return;
+        if(!bankerPaymentApp && table.bankingMode === "banker") return;
         setTables(null);
         let resp;
         try {
@@ -148,12 +144,15 @@ const AdminPage = () => {
                 </a>
             ))
         return (
-            <p key={player.id} style={{color: player.amount > 0 ? "#FF0000" : "#00FF00"}}>
-                {player.name} • {player.paymentApp} • {player.email}:&nbsp;
-                {player.amount > 0 ? "Lost" : "Won"}&nbsp;
-                ${Math.abs(player.amount)} (in ${player.in} / out ${-player.out})
-                {photos}
-            </p>
+            <tr key={player.id}>
+                <td>{player.name}</td>
+                <td>{player.paymentApp}</td>
+                <td>{player.email}</td>
+                <td>${displayCents(player.in)}</td>
+                <td>${displayCents(-player.out)}</td>
+                <td className={player.amount > 0 ? style.lost : style.won}>${displayCents(-player.amount)}</td>
+                <td>{photos}</td>
+            </tr>
         )
     });
 
@@ -161,7 +160,7 @@ const AdminPage = () => {
 
     return (
         <div id={style.admin_page}>
-            <h1>{blindsDisplay} · {table.gameType} · Table {table.tableNumber}</h1>
+            <h1>{blindsText} · {table.gameType} · Table {table.tableNumber}</h1>
             {
                 error && <p className={style.error}>{error}</p>
             }
@@ -170,13 +169,24 @@ const AdminPage = () => {
                 <span id={style.sum}>
                     {
                         ledgerSumsToZero ? (
-                            <span><FontAwesomeIcon icon={faCheck} /> Ledger checks out</span>
+                            <span><FontAwesomeIcon icon={faCircleCheck} /> Ledger checks out</span>
                         ) : (
-                            <span><FontAwesomeIcon icon={faX} /> Ledger does not sum to zero</span>
+                            <span><FontAwesomeIcon icon={faCircleXmark} /> Ledger does not sum to zero</span>
                         )
                     }
                 </span>
-                {ledgerElems}
+                <table id={style.ledger_table}>
+                    <tr>
+                        <th>Name</th>
+                        <th>Venmo/Zelle</th>
+                        <th>Email</th>
+                        <th>In</th>
+                        <th>Out</th>
+                        <th>Net</th>
+                        <th>Chips</th>
+                    </tr>
+                    {ledgerElems}
+                </table>
             </div>
             {
                 !table.closedAt && (
@@ -189,7 +199,7 @@ const AdminPage = () => {
                 ledgerSumsToZero && !table.bankingIsSettled && (
                     <>
                         {
-                            (table.bankingMode === "banker" || table.bankingMode === "banker-prepay") && (
+                            (table.bankingMode === "banker") && (
                                 <Input
                                     label="Banker Venmo & Zelle"
                                     type="text"

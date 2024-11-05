@@ -49,7 +49,9 @@ const HomePage = () => {
         </button>
     );
 
-    const usedTableNumbers = useMemo(() => tables && Object.values(tables).map(t => t.tableNumber), [tables]);
+    const usedTableNumbers = useMemo(
+        () => tables && Object.values(tables).filter(t => t.closedAt === null).map(t => t.tableNumber)
+    , [tables]);
 
     if(!tables) {
         return (
@@ -101,7 +103,9 @@ const CreateTableModal = ({ setError, usedTableNumbers }) => {
         { value: "transfer", label: "Direct transfers" },
     ];
 
-    const tableNumberOptionsFiltered = TABLE_NUMBER_OPTIONS.filter(tn => !usedTableNumbers.includes(tn.value));
+    const tableNumberOptionsFiltered = TABLE_NUMBER_OPTIONS.filter(
+        tn => !usedTableNumbers.includes(tn.value)
+    );
 
     const [tableNumber, setTableNumber] = React.useState("");
     const [blinds, setBlinds] = React.useState(".05/.10");

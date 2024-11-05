@@ -1,7 +1,7 @@
 import React from "react";
 import style from "./stylesheets/ChipDenoms.module.scss";
 import ChipImg from "../resources/redchip.png";
-import { CHIP_COLOR_FILTERS } from "../helpers/consts";
+import { CHIP_COLOR_FILTERS, displayCents } from "../helpers/consts";
 
 const ChipDenoms = ({ denoms, startingStack }) => {
 
@@ -9,7 +9,7 @@ const ChipDenoms = ({ denoms, startingStack }) => {
 
     const chips = Object.keys(denoms).map(color => {
         const denom = denoms[color];
-        const denomDisplay = denom < 1 ? `${denom * 100}¢` : `$${denom}`;
+        const denomDisplay = denom < 100 ? `${denom}¢` : `$${displayCents(denom)}`;
         const stack = startingStack[color];
         const filterStyle = { filter: CHIP_COLOR_FILTERS[color] || "opacity(0%)" };
         return (

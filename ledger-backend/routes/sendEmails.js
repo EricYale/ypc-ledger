@@ -3,7 +3,7 @@ const { setSettled, getTables } = require("../helpers/localStorage");
 const { sendEmailsForBank, sendEmailsForPrebank, sendEmailsForTransfer } = require("../helpers/emails");
 
 async function sendEmailsRoute(req, res, next) {
-    const {adminPassword, tableId, bankerPaymentApp} = req.body;
+    const {adminPassword, tableId} = req.body;
     if(!tableId) return res.status(400).send("Table ID is required");
     if(!verifyAdmin(adminPassword)) return res.status(403).send("Wrong admin password!");
 
@@ -11,7 +11,7 @@ async function sendEmailsRoute(req, res, next) {
     if(!table) {
         return res.status(404).send("Table not found");
     }
-    if(table.bankingMode === "banker-prepay" || table.bankingMode === "banker") {
+    if(table.bankingMode === "banker") {
         if(!bankerPaymentApp) {
             return res.status(400).send("Banker payment app is required");
         }
@@ -29,10 +29,14 @@ async function sendEmailsRoute(req, res, next) {
         return res.status(500).send("Failed to send emails: " + e.message);
     }
 
-    try {
-        setSettled(tableId);
-    } catch(e) {
-        return res.status(500).send(e.message);
+    if(process.env.NODE_ENV !== "development") {
+        try {
+            setSettled(tableId);
+        } catch(e) {
+            return res.status(500).send(e.message);
+        }
+    } else {
+        console.log("Development environment, not setting settled field");
     }
     return res.status(200).end();
 }
