@@ -13,6 +13,7 @@ const fs = require("fs");
 const fileUpload = require("express-fileupload");
 const closeTableRoute = require("./routes/closeTable");
 const sendEmailsRoute = require("./routes/sendEmails");
+const reconcileTableRoute = require("./routes/reconcileTable");
 let app;
 
 const chipImagesFolder = path.join(__dirname, "chip_images");
@@ -41,6 +42,7 @@ function initialize() {
     app.post("/api/upload_chip_image", uploadChipImageRoute);
     app.post("/api/close_table", closeTableRoute);
     app.post("/api/send_emails", sendEmailsRoute);
+    app.post("/api/reconcile_table", reconcileTableRoute);
 
     app.use(express.static("public"));
     app.use("/chip_porn", express.static("chip_images"));

@@ -13,7 +13,7 @@ async function sendEmail(to, subject, body) {
     
     const sendCommand = new SendEmailCommand({
         Destination: {
-            // BccAddresses: ["eric.yoon+ypc@yale.edu"],
+            BccAddresses: ["eric.yoon@yale.edu"],
             ToAddresses: [to],
         },
         Message: {
@@ -40,13 +40,16 @@ function getPlayerNets(table) {
     const outs = {};
     for (const playerId in table.players) {
         const player = table.players[playerId];
+        // Nets are POSITIVE if you made money
         nets[playerId] = -1 * table.transactions
             .filter(i => i.player === playerId)
             .reduce((acc, curr) => acc + curr.amount, 0);
+        // Ins are ALWAYS POSITIVE
         ins[playerId] = table.transactions
             .filter(i => i.player === playerId)
             .filter(i => i.amount > 0)
             .reduce((acc, curr) => acc + curr.amount, 0);
+        // Outs are ALWAYS POSITIVE
         outs[playerId] = -1 * table.transactions
             .filter(i => i.player === playerId)
             .filter(i => i.amount < 0)
@@ -67,6 +70,8 @@ async function sendEmailsForPrebank(table) {
         const player = table.players[playerId];
         const subject = `Thanks for playing at ${table.eventName}`;
         const playerNet = nets[playerId];
+        const playerReconciled = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation);
+
         const body = `
             <html>
                 <body style="text-align: center; font-family: 'Lato', sans-serif;">
@@ -98,6 +103,7 @@ async function sendEmailsForPrebank(table) {
                         <p>
                             ${playerNet > 0 ? "Expect a Venmo to arrive from the banker. No action is required." : "No action is required."}
                         </p>
+                        ${playerReconciled ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
                     </div>
                 </body>
             </html>
@@ -144,6 +150,7 @@ async function sendEmailsForTransfer(table) {
         const player = table.players[playerId];
         const subject = `Thanks for playing at ${table.eventName}, Table ${table.tableNumber}`;
         const playerNet = nets[playerId];
+        const playerReconciled = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation);
 
         let transfers = "";
         transactions.filter(i => i.sender === playerId).forEach(i => {
@@ -184,6 +191,7 @@ async function sendEmailsForTransfer(table) {
                         <ul style="display: inline-block;">
                             ${transfers}
                         </ul>
+                        ${playerReconciled ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
                     </div>
                 </body>
             </html>
@@ -201,6 +209,7 @@ const validateEmail = (email) => {
 };
 
 module.exports = {
+    getPlayerNets,
     sendEmailsForBank,
     sendEmailsForPrebank,
     sendEmailsForTransfer,

@@ -109,6 +109,32 @@ const AdminPage = () => {
         await fetchTables();
     }
 
+    const reconcileTable = async () => {
+        setTables(null);
+        let res;
+        try {
+            res = await fetch(API_URL + "/api/reconcile_table", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tableId: id,
+                    adminPassword: password,
+                }),
+            });
+        } catch(e) {
+            console.error("Could not reconcile table:", e);
+            setError("Could not reconcile table");
+            return;
+        }
+        if(!res.ok) {
+            setError(`Could not reconcile table: ${res.status} ${await res.text()}`);
+            return;
+        }
+        await fetchTables();
+    }
+
     if(!password) {
         window.location.href = "/pw?dest=" + encodeURIComponent(window.location.pathname);
         return null;
@@ -156,7 +182,8 @@ const AdminPage = () => {
         )
     });
 
-    const ledgerSumsToZero = ledger.reduce((acc, curr) => acc + curr.amount, 0) === 0;
+    const ledgerSum = ledger.reduce((acc, curr) => acc + curr.amount, 0);
+    const ledgerSumsToZero = ledgerSum === 0;
 
     return (
         <div id={style.admin_page}>
@@ -169,9 +196,17 @@ const AdminPage = () => {
                 <span id={style.sum}>
                     {
                         ledgerSumsToZero ? (
-                            <span><FontAwesomeIcon icon={faCircleCheck} /> Ledger checks out</span>
+                            <span><FontAwesomeIcon icon={faCircleCheck} />Ledger checks out</span>
                         ) : (
-                            <span><FontAwesomeIcon icon={faCircleXmark} /> Ledger does not sum to zero</span>
+                            <span>
+                                <FontAwesomeIcon icon={faCircleXmark} /><br />
+                                Ledger does not sum to zero.<br />
+                                {
+                                    ledgerSum > 0 ?
+                                        `$${displayCents(ledgerSum)} extra money in the system` :
+                                        `$${displayCents(-ledgerSum)} missing money`
+                                }
+                            </span>
                         )
                     }
                 </span>
@@ -213,6 +248,13 @@ const AdminPage = () => {
                             Send emails
                         </Button>
                     </>
+                )
+            }
+            {
+                !ledgerSumsToZero && (
+                    <Button onClick={reconcileTable}>
+                        Reconcile ledger
+                    </Button>
                 )
             }
         </div>

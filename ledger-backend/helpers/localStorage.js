@@ -172,4 +172,6 @@ module.exports = {
     setUserToken,
     closeTable,
     setSettled,
+    saveTable,
+    tables,
 };
