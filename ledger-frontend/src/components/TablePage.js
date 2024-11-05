@@ -15,7 +15,9 @@ const TablePage = () => {
     const [paymentApp, setPaymentApp] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [showBuyOutUI, setShowBuyOutUI] = React.useState(false);
+    const [showBuyInUI, setShowBuyInUI] = React.useState(false);
     const [buyOutAmount, setBuyOutAmount] = React.useState(0);
+    const [buyInAmount, setBuyInAmount] = React.useState(0);
     const [successChipUrl, setSuccessChipUrl] = React.useState(null);
     const [error, setError] = React.useState(null);
     const uid = getUID();
@@ -40,6 +42,7 @@ const TablePage = () => {
 
     const addUserToTable = async () => {
         if(!name || !paymentApp || !email) return;
+        setError(null);
         let res;
         try {
             res = await fetch(API_URL + "/api/join_table", {
@@ -65,11 +68,15 @@ const TablePage = () => {
             setError("Could not join table: " + await res.text());
             return;
         }
+        setError(null);
         await fetchTables();
     };
 
     const buyIn = async () => {
+        const buyInCents = toCents(parseFloat(buyInAmount));
         setTables(null);
+        setError(null);
+        setShowBuyInUI(false);
         let res;
         try {
             res = await fetch(API_URL + "/api/buy_in", {
@@ -81,9 +88,7 @@ const TablePage = () => {
                     userId: uid,
                     userToken: token,
                     tableId: id,
-                    name,
-                    paymentApp,
-                    email,
+                    amount: buyInCents,
                 }),
             });
         } catch(e) {
@@ -274,11 +279,34 @@ const TablePage = () => {
         </div>
     );
 
+    const buyInUI = (
+        <div id={style.buy_in_modal}>
+            <h2>Buy in</h2>
+            <Input
+                label="Buy-in amount ($)"
+                placeholder={displayCents(table.bigBlind * 100)}
+                value={buyInAmount}
+                onChange={e => setBuyInAmount(e.target.value)}
+            />
+            <Button onClick={buyIn}>
+                Confirm
+            </Button>
+            <Button onClick={() => setShowBuyInUI(false)}>
+                Cancel
+            </Button>
+        </div>
+    );
+
+    const onBuyInButtonClicked = () => {
+        setShowBuyInUI(true);
+        setBuyInAmount(table.bigBlind); // * 100 buyins, but / 100 for dollars
+    };
+
     return (
         <div id={style.table_page}>
             <h1>{blindsText} · {table.gameType} · Table {table.tableNumber}</h1>
             {
-                currentMoneyIn > 0 ? (
+                currentMoneyIn >= 0 ? (
                     <h2>You're in for ${displayCents(currentMoneyIn)}</h2>
                 ) : (
                     <h2>You've won ${displayCents(-currentMoneyIn)}</h2>
@@ -289,26 +317,21 @@ const TablePage = () => {
                 error && <p className={style.error}>{error}</p>
             }
             {
-                currentMoneyIn === 0 ? (
-                    <Button onClick={buyIn}>
-                        Buy in for ${displayCents(table.bigBlind * 100)}
+                !showBuyInUI && !showBuyOutUI && (
+                    <Button onClick={onBuyInButtonClicked}>
+                        {currentMoneyIn === 0 ? "Buy in" : "Top up"}
                     </Button>
-                ) : (
-                    <>
-                        <Button onClick={buyIn}>
-                            Top up for ${displayCents(table.bigBlind * 100)}
-                        </Button>
-                        {
-                            !showBuyOutUI && (
-                                <Button onClick={() => setShowBuyOutUI(true)}>
-                                    Buy out
-                                </Button>
-                            )
-                        }
-                        {showBuyOutUI && buyOutUI}
-                    </>
                 )
             }
+            {
+                !showBuyInUI && !showBuyOutUI && (
+                    <Button onClick={() => setShowBuyOutUI(true)}>
+                        Buy out
+                    </Button>
+                )
+            }
+            {showBuyInUI && buyInUI}
+            {showBuyOutUI && buyOutUI}
         </div>
     )
 };

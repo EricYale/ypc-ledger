@@ -2,9 +2,12 @@ const { verifyUserToken } = require("../helpers/auth");
 const { addTransactionToTable, getTables } = require("../helpers/localStorage");
 
 async function buyInRoute(req, res, next) {
-    const { userId, userToken, tableId } = req.body;
-    if(!userId || !tableId) {
+    const { userId, userToken, tableId, amount } = req.body;
+    if(!userId || !tableId || typeof(amount) !== "number") {
         return res.status(400).send("Missing required fields");
+    }
+    if(amount < 0) {
+        return res.status(400).send("Amount must be positive");
     }
     if(!verifyUserToken(userId, userToken)) {
         return res.status(403).send("Invalid user token");
@@ -19,7 +22,7 @@ async function buyInRoute(req, res, next) {
     try {
         addTransactionToTable(tableId, {
             player: userId,
-            amount: table.bigBlind * 100,
+            amount,
             timestamp: new Date().toISOString(),
         });
     } catch(e) {

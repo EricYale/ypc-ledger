@@ -1,6 +1,7 @@
 const { BLINDS } = require("../helpers/blinds");
 const { addUserToTable } = require("../helpers/localStorage");
 const { verifyUserToken } = require("../helpers/auth");
+const { validateEmail } = require("../helpers/emails");
 
 async function joinTableRoute(req, res, next) {
     const { userId, userToken, name, paymentApp, email, tableId } = req.body;
@@ -9,6 +10,9 @@ async function joinTableRoute(req, res, next) {
     }
     if(!verifyUserToken(userId, userToken)) {
         return res.status(403).send("Invalid user token");
+    }
+    if(!validateEmail(email)) {
+        return res.status(400).send("Invalid email");
     }
     try {
         addUserToTable(tableId, userId, {

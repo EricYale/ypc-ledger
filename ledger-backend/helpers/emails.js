@@ -102,8 +102,7 @@ async function sendEmailsForPrebank(table) {
                 </body>
             </html>
         `;
-        await sendEmail("eric.yoon@yale.edu", subject, body);
-        // await sendEmail(player.email, subject, body);
+        await sendEmail(player.email, subject, body);
     }
 }
 
@@ -189,14 +188,21 @@ async function sendEmailsForTransfer(table) {
                 </body>
             </html>
         `;
-        console.log(transfers)
-        await sendEmail("eric.yoon@yale.edu", subject, body);
-        // await sendEmail(player.email, subject, body);
+        await sendEmail(player.email, subject, body);
     }
 }
+
+const validateEmail = (email) => {
+    return String(email)
+        .toLowerCase()
+        .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};
 
 module.exports = {
     sendEmailsForBank,
     sendEmailsForPrebank,
     sendEmailsForTransfer,
+    validateEmail,
 };

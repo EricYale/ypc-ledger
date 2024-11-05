@@ -5,7 +5,7 @@
     @include shared.rails;
     text-align: center;
 }
-#buy_out_modal {
+#buy_out_modal, #buy_in_modal {
     margin-top: 50px;
     padding: 30px;
     border-radius: 10px;
