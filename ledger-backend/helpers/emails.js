@@ -86,12 +86,13 @@ async function sendEmailsForBank(table) {
 
 async function sendEmailsForTransfer(table) {
     const {nets, ins, outs} = getPlayerNets(table);
-
-    const ledgerSumsToZero = Object.values(nets).reduce((acc, curr) => acc + curr, 0) === 0;
-    if(!ledgerSumsToZero) {
-        console.error("Ledger does not sum to zero"); // should be prevented by frontend ui anyways
-        return;
-    }
+    // round each net to the nearest cent
+    for(const playerId in nets) nets[playerId] = Math.round(nets[playerId] * 100) / 100;
+    // const ledgerSumsToZero = Object.values(nets).reduce((acc, curr) => acc + curr, 0) === 0;
+    // if(!ledgerSumsToZero) {
+    //     console.error("Ledger does not sum to zero"); // should be prevented by frontend ui anyways
+    //     return;
+    // }
 
     // thanks, ken https://ken-ledger.herokuapp.com/
     const transactions = [];
@@ -105,8 +106,8 @@ async function sendEmailsForTransfer(table) {
         const amount = Math.min(ledger[maxPlayer], Math.abs(ledger[minPlayer]));
         ledger[maxPlayer] -= amount;
         ledger[minPlayer] += amount;
-        if(ledger[maxPlayer] === 0) delete ledger[maxPlayer];
-        if(ledger[minPlayer] === 0) delete ledger[minPlayer];
+        if(Math.abs(ledger[maxPlayer]) < 0.01) delete ledger[maxPlayer];
+        if(Math.abs(ledger[minPlayer]) < 0.01) delete ledger[minPlayer];
         transactions.push({
             sender: minPlayer,
             recipient: maxPlayer,
@@ -121,10 +122,10 @@ async function sendEmailsForTransfer(table) {
 
         let transfers = "";
         transactions.filter(i => i.sender === playerId).forEach(i => {
-            transfers += `<li>Please send $${i.amount} to ${table.players[i.recipient].paymentApp}.</li>`;
+            transfers += `<li>Please send $${i.amount.toFixed(2)} to ${table.players[i.recipient].paymentApp}.</li>`;
         });
         transactions.filter(i => i.recipient === playerId).forEach(i => {
-            transfers += `<li>Expect a transfer of $${i.amount} from ${table.players[i.sender].paymentApp}.</li>`;
+            transfers += `<li>Expect a transfer of $${i.amount.toFixed(2)} from ${table.players[i.sender].paymentApp}.</li>`;
         });
 
         const body = `

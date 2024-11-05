@@ -7,10 +7,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Input from "./Input";
 import Button from "./Button";
+import { getSavedAdminPassword } from "../helpers/localStorage";
 
 const HomePage = () => {
     const [tables, setTables] = React.useState(null);
+    const [error, setError] = React.useState(null);
     const [showingCreateModal, setShowingCreateModal] = React.useState(false);
+    const password = getSavedAdminPassword();
 
     useEffect(() => {
         (async () => {
@@ -19,6 +22,11 @@ const HomePage = () => {
                 res = await fetch(API_URL + "/api/get_tables");
             } catch(e) {
                 console.error("Could not fetch tables:", e);
+                setError(`Could not fetch tables: ${e.message}`);
+                return;
+            }
+            if(!res.ok) {
+                setError(`Could not fetch tables: ${res.status} ${await res.text()}`);
                 return;
             }
             const json = await res.json();
@@ -30,7 +38,7 @@ const HomePage = () => {
         <TableCard key={table.id} tableData={table} />
     )), [tables]);
 
-    const showModalButton = (
+    const showModalButton = password && (
         <button id={style.create_table_button} onClick={() => setShowingCreateModal(true)}>
             <FontAwesomeIcon icon={faPlus} />
         </button>
@@ -40,6 +48,9 @@ const HomePage = () => {
         return (
             <div id={style.home_page}>
                 Loading...
+                {
+                    error && <p className={style.error}>{error}</p>
+                }
             </div>
         );
     }
@@ -47,21 +58,25 @@ const HomePage = () => {
     return (
         <div id={style.home_page}>
             <img src={Logo} alt="Yale Student Poker Club" id={style.logo} />
+            {
+                error && <p className={style.error}>{error}</p>
+            }
             <div id={style.tables_container}>
                 { tableElems }
                 { !showingCreateModal && showModalButton }
-                { showingCreateModal && <CreateTableModal /> }
+                { showingCreateModal && <CreateTableModal setError={setError} /> }
             </div>
         </div>
     )
 };
 
-const CreateTableModal = () => {
+const CreateTableModal = ({ setError }) => {
     const [roomNumber, setRoomNumber] = React.useState("WLH 003");
     const [tableNumber, setTableNumber] = React.useState("1");
     const [loading, setLoading] = React.useState(false);
+    const password = getSavedAdminPassword();
 
-    const createTable = useCallback(async (blindsString) => {
+    const createTable = async (blindsString) => {
         if(roomNumber === "" || tableNumber === "") return;
         setLoading(true);
         const weekday = new Date().toLocaleString('en-us', {  weekday: 'long' });
@@ -77,15 +92,21 @@ const CreateTableModal = () => {
                     roomNumber,
                     tableNumber,
                     blinds: blindsString,
+                    adminPassword: password,
                 }),
             });
         } catch(e) {
             console.error("Could not create table:", e);
+            setError(`Could not create table: ${e.message}`);
+            return;
+        }
+        if(!res.ok) {
+            setError(`Could not create table: ${res.status} ${await res.text()}`);
             return;
         }
         const id = await res.text();
         window.location.href = `/table/${id}`;
-    });
+    };
 
     if(loading) {
         return (

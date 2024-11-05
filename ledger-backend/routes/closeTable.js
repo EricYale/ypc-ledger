@@ -4,7 +4,7 @@ const { closeTable, getTables } = require("../helpers/localStorage");
 async function closeTableRoute(req, res, next) {
     const {adminPassword, tableId} = req.body;
     if(!tableId) return res.status(400).send("Table ID is required");
-    if(!verifyAdmin(adminPassword)) return res.status(403).send("Unauthorized");
+    if(!verifyAdmin(adminPassword)) return res.status(403).send("Wrong admin password!");
 
     const table = getTables()[tableId];
     if(!table) {

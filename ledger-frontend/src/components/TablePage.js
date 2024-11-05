@@ -17,6 +17,7 @@ const TablePage = () => {
     const [showBuyOutUI, setShowBuyOutUI] = React.useState(false);
     const [buyOutAmount, setBuyOutAmount] = React.useState(0);
     const [successChipUrl, setSuccessChipUrl] = React.useState(null);
+    const [error, setError] = React.useState(null);
     const uid = getUID();
     const token = getToken();
 
@@ -26,6 +27,11 @@ const TablePage = () => {
             res = await fetch(API_URL + "/api/get_tables");
         } catch(e) {
             console.error("Could not fetch tables:", e);
+            setError(`Could not fetch tables: ${e.message}`);
+            return;
+        }
+        if(!res.ok) {
+            setError(`Could not fetch tables: ${res.status} ${await res.text()}`);
             return;
         }
         const json = await res.json();
@@ -34,8 +40,9 @@ const TablePage = () => {
 
     const addUserToTable = async () => {
         if(!name || !paymentApp || !email) return;
+        let res;
         try {
-            await fetch(API_URL + "/api/join_table", {
+            res = await fetch(API_URL + "/api/join_table", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -51,6 +58,11 @@ const TablePage = () => {
             });
         } catch(e) {
             console.error("Could not join table:", e);
+            setError("Could not join table: " + e.message);
+            return;
+        }
+        if(!res.ok) {
+            setError("Could not join table: " + await res.text());
             return;
         }
         await fetchTables();
@@ -58,8 +70,9 @@ const TablePage = () => {
 
     const buyIn = async () => {
         setTables(null);
+        let res;
         try {
-            await fetch(API_URL + "/api/buy_in", {
+            res = await fetch(API_URL + "/api/buy_in", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -74,7 +87,12 @@ const TablePage = () => {
                 }),
             });
         } catch(e) {
-            console.error("Could not join table:", e);
+            console.error("Could not buy in:", e);
+            setError("Could not buy in: " + e.message);
+            return;
+        }
+        if(!res.ok) {
+            setError("Could not buy in: " + await res.text());
             return;
         }
         await fetchTables();
@@ -95,10 +113,11 @@ const TablePage = () => {
             });
         } catch(e) {
             console.error("Could not upload chip photo:", e);
+            setError("Could not upload chip photo: " + e.message);
             return;
         }
         if(!chipResp.ok) {
-            console.error("Could not upload chip photo:", await chipResp.text());
+            setError("Could not upload chip photo: " + await chipResp.text());
             await fetchTables();
             return;
         }
@@ -121,14 +140,14 @@ const TablePage = () => {
             });
         } catch(e) {
             console.error("Could not buy out:", e);
+            setError("Could not buy out: " + e.message);
             return;
         }
         if(!buyOutResp.ok) {
-            console.error("Could not buy out:", await buyOutResp.text());
+            setError("Could not buy out: " + await buyOutResp.text());
             await fetchTables();
             return;
         }
-        
         setSuccessChipUrl(chipUrl);
         confetti({
             particleCount: 200,
@@ -158,6 +177,9 @@ const TablePage = () => {
         return (
             <div id={style.table_page}>
                 Loading...
+                {
+                    error && <p className={style.error}>{error}</p>
+                }
             </div>
         )
     }
@@ -166,6 +188,9 @@ const TablePage = () => {
         return (
             <div id={style.table_page}>
                 Table not found
+                {
+                    error && <p className={style.error}>{error}</p>
+                }
             </div>
         )
     }
@@ -173,6 +198,9 @@ const TablePage = () => {
         return (
             <div id={style.table_page}>
                 Table is closed
+                {
+                    error && <p className={style.error}>{error}</p>
+                }
             </div>
         )
     }
@@ -206,6 +234,9 @@ const TablePage = () => {
                 <Button onClick={addUserToTable}>
                     Let's play!
                 </Button>
+                {
+                    error && <p className={style.error}>{error}</p>
+                }
             </div>
         )
     }
@@ -248,6 +279,9 @@ const TablePage = () => {
             <h1>{blindsDisplay} · {table.gameType} · {table.tableNumber}</h1>
             <h2>You're in for ${currentMoneyIn}</h2>
             <ChipDenoms denoms={table.denominations} startingStack={table.startingStack} />
+            {
+                error && <p className={style.error}>{error}</p>
+            }
             {
                 currentMoneyIn === 0 ? (
                     <Button onClick={buyIn}>

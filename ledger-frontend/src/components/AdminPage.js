@@ -6,23 +6,26 @@ import { API_URL } from "../helpers/consts";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faImage, faX } from "@fortawesome/free-solid-svg-icons";
+import { getSavedAdminPassword } from "../helpers/localStorage";
 
 const AdminPage = () => {
     const {id} = useParams();
     const [tables, setTables] = React.useState(null);
-    const [password, setPassword ] = React.useState("");
     const [bankerPaymentApp, setBankerPaymentApp] = React.useState("");
-    const [passwordEntered, setPasswordEntered] = React.useState(false);
+    const [error, setError] = React.useState("");
+    const password = getSavedAdminPassword();
 
     const fetchTables = async () => {
-        let res;
+        let json;
         try {
-            res = await fetch(API_URL + "/api/get_tables");
+            const res = await fetch(API_URL + "/api/get_tables");
+            if(!res.ok) throw new Error(`Error ${res.status}`);
+            json = await res.json();
         } catch(e) {
             console.error("Could not fetch tables:", e);
+            setError(`Could not fetch tables: ${e.message}`);
             return;
         }
-        const json = await res.json();
         setTables(json);
     };
 
@@ -30,28 +33,13 @@ const AdminPage = () => {
         fetchTables();
     }, []);
 
-    if(!passwordEntered) {
-        return (
-            <div id={style.admin_page}>
-                <h1>Admin Page</h1>
-                <Input
-                    label="Password"
-                    type="password"
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    placeholder="foobar"
-                />
-                <Button onClick={() => setPasswordEntered(true)}>
-                    Enter
-                </Button>
-            </div>
-        );
-    }
-
     if(!tables) {
         return (
             <div id={style.admin_page}>
                 Loading...
+                {
+                    error && <p className={style.error}>{error}</p>
+                }
             </div>
         )
     }
@@ -74,8 +62,9 @@ const AdminPage = () => {
         const isBankerMode = table.bankingMode === "banker" || table.bankingMode === "banker-prepay";
         if(!bankerPaymentApp && isBankerMode) return;
         setTables(null);
+        let resp;
         try {
-            await fetch(API_URL + "/api/send_emails", {
+            resp = await fetch(API_URL + "/api/send_emails", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -88,6 +77,11 @@ const AdminPage = () => {
             });
         } catch(e) {
             console.error("Could not send emails:", e);
+            setError("Error while sending emails");
+            return;
+        }
+        if(!resp.ok) {
+            setError(`Could not send emails: ${resp.status} ${await resp.text()}`);
             return;
         }
         await fetchTables();
@@ -95,8 +89,9 @@ const AdminPage = () => {
 
     const closeTable = async () => {
         setTables(null);
+        let res;
         try {
-            await fetch(API_URL + "/api/close_table", {
+            res = await fetch(API_URL + "/api/close_table", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -108,9 +103,19 @@ const AdminPage = () => {
             });
         } catch(e) {
             console.error("Could not close table:", e);
+            setError("Could not close table");
+            return;
+        }
+        if(!res.ok) {
+            setError(`Could not close table: ${res.status} ${await res.text()}`);
             return;
         }
         await fetchTables();
+    }
+
+    if(!password) {
+        window.location.href = "/pw?dest=" + encodeURIComponent(window.location.pathname);
+        return null;
     }
 
     const ledger = Object.keys(table.players)
@@ -157,6 +162,9 @@ const AdminPage = () => {
     return (
         <div id={style.admin_page}>
             <h1>{blindsDisplay} · {table.gameType} · {table.tableNumber}</h1>
+            {
+                error && <p className={style.error}>{error}</p>
+            }
             <div id={style.ledger}>
                 <h2>Ledger</h2>
                 <span id={style.sum}>

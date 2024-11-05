@@ -1,11 +1,13 @@
+const { verifyAdmin } = require("../helpers/auth");
 const { BLINDS } = require("../helpers/blinds");
 const { createTable } = require("../helpers/localStorage");
 
 async function createTableRoute(req, res, next) {
-    const { eventName, roomNumber, tableNumber, blinds } = req.body;
+    const { eventName, roomNumber, tableNumber, blinds, adminPassword } = req.body;
     if(!eventName || !roomNumber || !tableNumber || !blinds) {
         return res.status(400).json({ error: "Missing required fields" });
     }
+    if(!verifyAdmin(adminPassword)) return res.status(403).send("Wrong admin password!");
     if(!(blinds in BLINDS)) {
         return res.status(400).json({ error: "Invalid blinds string" });
     }

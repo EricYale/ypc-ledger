@@ -5,7 +5,7 @@ const { sendEmailsForBank, sendEmailsForPrebank, sendEmailsForTransfer } = requi
 async function sendEmailsRoute(req, res, next) {
     const {adminPassword, tableId, bankerPaymentApp} = req.body;
     if(!tableId) return res.status(400).send("Table ID is required");
-    if(!verifyAdmin(adminPassword)) return res.status(403).send("Unauthorized");
+    if(!verifyAdmin(adminPassword)) return res.status(403).send("Wrong admin password!");
 
     const table = getTables()[tableId];
     if(!table) {
@@ -17,12 +17,16 @@ async function sendEmailsRoute(req, res, next) {
         }
     }
     
-    if(table.bankingMode === "banker-prepay") {
-        await sendEmailsForPrebank(table);
-    } else if( table.bankingMode === "banker") {
-        await sendEmailsForBank(table);
-    } else if( table.bankingMode === "transfer") {
-        await sendEmailsForTransfer(table);
+    try {
+        if(table.bankingMode === "banker-prepay") {
+            await sendEmailsForPrebank(table);
+        } else if( table.bankingMode === "banker") {
+            await sendEmailsForBank(table);
+        } else if( table.bankingMode === "transfer") {
+            await sendEmailsForTransfer(table);
+        }
+    } catch(e) {
+        return res.status(500).send("Failed to send emails: " + e.message);
     }
 
     try {

@@ -7,7 +7,7 @@ function randomString(length) {
     return result;
 }
 
-function getUID() {
+export function getUID() {
     const uid = localStorage.getItem("uid");
     if(!uid) return generateUID();
     return uid;
@@ -19,7 +19,7 @@ function generateUID() {
     return uid;
 }
 
-function getToken() {
+export function getToken() {
     const token = localStorage.getItem("token");
     if(!token) return generateToken();
     return token;
@@ -31,4 +31,10 @@ function generateToken() {
     return token;
 }
 
-module.exports = { getUID, getToken };
+export function getSavedAdminPassword() {
+    return localStorage.getItem("adminPassword");
+}
+
+export function saveAdminPassword(password) {
+    localStorage.setItem("adminPassword", password);
+}

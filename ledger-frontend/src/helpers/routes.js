@@ -1,4 +1,5 @@
 import AdminPage from "../components/AdminPage";
+import AdminPasswordEntryPage from "../components/AdminPasswordEntryPage";
 import HomePage from "../components/HomePage";
 import TablePage from "../components/TablePage";
 
@@ -14,6 +15,10 @@ const ROUTES = [
     {
         path: "/table/:id/admin",
         element: <AdminPage />,
+    },
+    {
+        path: "/pw",
+        element: <AdminPasswordEntryPage />,
     },
 ];
 
