@@ -13,9 +13,15 @@ async function reconcileTableRoute(req, res, next) {
         return res.status(404).send("Table not found");
     }
 
-    const {nets, ins, outs} = getPlayerNets(table);
+    const {nets, outs} = getPlayerNets(table);
     // Players who didn't lose their entire buy-in
     const nonBankruptPlayers = Object.keys(table.players).filter(id => outs[id] > 0);
+
+    if(nonBankruptPlayers.length === 0) {
+        res.status(200).send("No non-bankrupt players to reconcile");
+        return;
+    }
+
     const topEarner = nonBankruptPlayers.reduce((a, b) => nets[a] > nets[b] ? a : b);
     const fanumTaxTotal = Object.values(nets).reduce((acc, curr) => acc + curr, 0);
 
