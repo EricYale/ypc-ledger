@@ -139,6 +139,7 @@ async function sendEmailsForTransfer(table) {
         ledger[minPlayer] += amount;
         if(ledger[maxPlayer] === 0) delete ledger[maxPlayer];
         if(ledger[minPlayer] === 0) delete ledger[minPlayer];
+        if(amount === 0) continue;
         transactions.push({
             sender: minPlayer,
             recipient: maxPlayer,
@@ -159,6 +160,7 @@ async function sendEmailsForTransfer(table) {
         transactions.filter(i => i.recipient === playerId).forEach(i => {
             transfers += `<li>Expect a transfer of <b>$${displayCents(i.amount)}</b> from <b>${table.players[i.sender].paymentApp}</b>.</li>`;
         });
+        if(transfers.length === 0) transfers = "<li>No action is required.</li>";
 
         const body = `
             <html>
