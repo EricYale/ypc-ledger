@@ -159,6 +159,7 @@ async function sendEmailsForTransfer(table) {
         transactions.filter(i => i.recipient === playerId).forEach(i => {
             transfers += `<li>Expect a transfer of <b>$${displayCents(i.amount)}</b> from <b>${table.players[i.sender].paymentApp}</b>.</li>`;
         });
+        if(transfers.length === 0) transfers = "<li>No action is required.</li>";
 
         const body = `
             <html>
