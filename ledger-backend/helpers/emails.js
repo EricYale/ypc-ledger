@@ -139,6 +139,7 @@ async function sendEmailsForTransfer(table) {
         ledger[minPlayer] += amount;
         if(ledger[maxPlayer] === 0) delete ledger[maxPlayer];
         if(ledger[minPlayer] === 0) delete ledger[minPlayer];
+        if(amount === 0) continue;
         transactions.push({
             sender: minPlayer,
             recipient: maxPlayer,
