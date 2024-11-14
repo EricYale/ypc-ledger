@@ -12,7 +12,8 @@ const TablePage = () => {
     const {id} = useParams();
     const [tables, setTables] = React.useState(null);
     const [name, setName] = React.useState("");
-    const [paymentApp, setPaymentApp] = React.useState("");
+    const [venmo, setVenmo] = React.useState("");
+    const [zelle, setZelle] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [showBuyOutUI, setShowBuyOutUI] = React.useState(false);
     const [showBuyInUI, setShowBuyInUI] = React.useState(false);
@@ -41,7 +42,14 @@ const TablePage = () => {
     };
 
     const addUserToTable = async () => {
-        if(!name || !paymentApp || !email) return;
+        if(!name || !email) {
+            setError("Please enter name and email");
+            return;
+        }
+        if(!venmo && !zelle) {
+            setError("Please enter your Venmo and/or Zelle");
+            return;
+        }
         setError(null);
         let res;
         try {
@@ -55,7 +63,8 @@ const TablePage = () => {
                     userToken: token,
                     tableId: id,
                     name,
-                    paymentApp,
+                    venmo,
+                    zelle,
                     email,
                 }),
             });
@@ -235,10 +244,17 @@ const TablePage = () => {
                 />
                 <Input
                     largeInput
-                    label="Venmo/Zelle"
+                    label="Venmo"
                     placeholder="@philhellmuth"
-                    value={paymentApp}
-                    onChange={e => setPaymentApp(e.target.value)}
+                    value={venmo}
+                    onChange={e => setVenmo(e.target.value)}
+                />
+                <Input
+                    largeInput
+                    label="Zelle"
+                    placeholder="1-800-PRE-FLOP"
+                    value={zelle}
+                    onChange={e => setZelle(e.target.value)}
                 />
                 <Button onClick={addUserToTable}>
                     Let's play!

@@ -4,9 +4,12 @@ const { verifyUserToken } = require("../helpers/auth");
 const { validateEmail } = require("../helpers/emails");
 
 async function joinTableRoute(req, res, next) {
-    const { userId, userToken, name, paymentApp, email, tableId } = req.body;
-    if(!userId || !name || !paymentApp || !email || !tableId) {
+    const { userId, userToken, name, venmo, zelle, email, tableId } = req.body;
+    if(!userId || !name || !email || !tableId) {
         return res.status(400).send("Missing required fields");
+    }
+    if(!venmo && !zelle) {
+        return res.status(400).send("Need at least one of: venmo or zelle");
     }
     if(!verifyUserToken(userId, userToken)) {
         return res.status(403).send("Invalid user token");
@@ -17,7 +20,8 @@ async function joinTableRoute(req, res, next) {
     try {
         addUserToTable(tableId, userId, {
             name,
-            paymentApp,
+            venmo,
+            zelle,
             email,
         });
     } catch(e) {

@@ -1,7 +1,6 @@
 const { verifyAdmin } = require("../helpers/auth");
-const { getPlayerNets } = require("../helpers/emails");
+const { getPlayerNets } = require("../helpers/banking");
 const { getTables, tables, saveTable } = require("../helpers/localStorage");
-
 
 async function reconcileTableRoute(req, res, next) {
     const {adminPassword, tableId} = req.body;

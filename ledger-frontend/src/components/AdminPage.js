@@ -11,7 +11,6 @@ import { getSavedAdminPassword } from "../helpers/localStorage";
 const AdminPage = () => {
     const {id} = useParams();
     const [tables, setTables] = React.useState(null);
-    const [bankerPaymentApp, setBankerPaymentApp] = React.useState("");
     const [error, setError] = React.useState("");
     const password = getSavedAdminPassword();
 
@@ -56,7 +55,6 @@ const AdminPage = () => {
 
     console.log(table, blindsText)
     const sendEmails = async () => {
-        if(!bankerPaymentApp && table.bankingMode === "banker") return;
         setTables(null);
         let resp;
         try {
@@ -68,7 +66,6 @@ const AdminPage = () => {
                 body: JSON.stringify({
                     tableId: id,
                     adminPassword: password,
-                    bankerPaymentApp,
                 }),
             });
         } catch(e) {
@@ -172,7 +169,7 @@ const AdminPage = () => {
         return (
             <tr key={player.id}>
                 <td>{player.name}</td>
-                <td>{player.paymentApp}</td>
+                <td>{player.venmo} {player.zelle}</td>
                 <td>{player.email}</td>
                 <td>${displayCents(player.in)}</td>
                 <td>${displayCents(-player.out)}</td>
@@ -233,17 +230,6 @@ const AdminPage = () => {
             {
                 ledgerSumsToZero && !table.bankingIsSettled && (
                     <>
-                        {
-                            (table.bankingMode === "banker") && (
-                                <Input
-                                    label="Banker Venmo & Zelle"
-                                    type="text"
-                                    placeholder="@nickribs"
-                                    value={bankerPaymentApp}
-                                    onChange={(e) => setBankerPaymentApp(e.target.value)}
-                                />
-                            )
-                        }
                         <Button onClick={sendEmails}>
                             Send emails
                         </Button>
