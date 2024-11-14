@@ -238,7 +238,7 @@ const AdminPage = () => {
                                 <Input
                                     label="Banker Venmo & Zelle"
                                     type="text"
-                                    placeholder="@nribeiro1"
+                                    placeholder="@nickribs"
                                     value={bankerPaymentApp}
                                     onChange={(e) => setBankerPaymentApp(e.target.value)}
                                 />
