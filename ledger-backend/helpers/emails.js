@@ -88,8 +88,18 @@ async function sendEmailsForBank(table) {
     // Will be implemented in the future because YPC always prebanks now
 }
 
-async function sendEmailsForTransfer(table) {
+function getPaymentMethod(player, mode) {
+    if(mode === "venmo") return player.venmo;
+    if(mode === "zelle") return player.zelle;
+    
+    if(player.venmo && player.zelle) return `${player.venmo} / ${player.zelle}`;
+    if(player.venmo) return player.venmo;
+    if(player.zelle) return player.zelle;
+    return "[no payment app]";
+}
 
+async function sendEmailsForTransfer(table) {
+    const {nets, ins, outs} = getPlayerNets(table);
     const transactions = getDirectTransferTransactions(table);
 
     for(const playerId of Object.keys(table.players)) {
@@ -100,10 +110,16 @@ async function sendEmailsForTransfer(table) {
 
         let transfers = "";
         transactions.filter(i => i.sender === playerId).forEach(i => {
-            transfers += `<li>Please send <b>$${displayCents(i.amount)}</b> to <b>${table.players[i.recipient].paymentApp}</b> using ${i.method}.</li>`;
+            const recipient = table.players[i.recipient];
+            paymentApp = getPaymentMethod(recipient, i.method);
+
+            transfers += `<li>Please send <b>$${displayCents(i.amount)}</b> to <b>${recipient.name}</b>: <b>${paymentApp}</b>.</li>`;
         });
         transactions.filter(i => i.recipient === playerId).forEach(i => {
-            transfers += `<li>Expect a transfer of <b>$${displayCents(i.amount)}</b> from <b>${table.players[i.sender].paymentApp}</b> using ${i.method}.</li>`;
+            const sender = table.players[i.sender];
+            const paymentApp = getPaymentMethod(sender, i.method);
+            
+            transfers += `<li>Expect a transfer of <b>$${displayCents(i.amount)}</b> from <b>${sender.name}</b>: <b>${paymentApp}</b>.</li>`;
         });
         if(transfers.length === 0) transfers = "<li>No action is required.</li>";
 
