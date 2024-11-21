@@ -1,3 +1,5 @@
+fullchain.pem
+privkey.pem
 node_modules/
 data/
 chip_images/
