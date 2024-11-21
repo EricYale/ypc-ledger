@@ -61,6 +61,13 @@ function initialize() {
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
+
+    // redirect insecure to secure
+    const insecureApp = express();
+    insecureApp.get("*", (req, res) => {
+        res.redirect(`https://${req.headers.host}${req.url}`);
+    });
+    insecureApp.listen(80);
 }
 
 initialize();
