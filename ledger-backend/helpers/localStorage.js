@@ -18,7 +18,8 @@ const tables = {
         "players": {
             "abcdef": {
                 "name": "Nick Ribs",
-                "paymentApp": "@nickribs",
+                "venmo": "@nickribs",
+                "zelle": "1-800-NICK-RIBS",
                 "email": "nickribs@gmail.com",
             },
         },

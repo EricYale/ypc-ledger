@@ -1,4 +1,5 @@
 const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses");
+const { displayCents, getPlayerNets, getDirectTransferTransactions } = require("./banking");
 
 const ses = new SESClient({
     region: process.env.AWS_SES_REGION,
@@ -32,35 +33,6 @@ async function sendEmail(to, subject, body) {
     });
 
     await ses.send(sendCommand);
-}
-
-function getPlayerNets(table) {
-    const nets = {};
-    const ins = {};
-    const outs = {};
-    for (const playerId in table.players) {
-        const player = table.players[playerId];
-        // Nets are POSITIVE if you made money
-        nets[playerId] = -1 * table.transactions
-            .filter(i => i.player === playerId)
-            .reduce((acc, curr) => acc + curr.amount, 0);
-        // Ins are ALWAYS POSITIVE
-        ins[playerId] = table.transactions
-            .filter(i => i.player === playerId)
-            .filter(i => i.amount > 0)
-            .reduce((acc, curr) => acc + curr.amount, 0);
-        // Outs are ALWAYS POSITIVE
-        outs[playerId] = -1 * table.transactions
-            .filter(i => i.player === playerId)
-            .filter(i => i.amount < 0)
-            .reduce((acc, curr) => acc + curr.amount, 0);
-    }
-    return {nets, ins, outs};
-}
-
-function displayCents(cents) {
-    if(cents % 100 === 0) return (cents / 100).toFixed(0);
-    return (cents / 100).toFixed(2);
 }
 
 async function sendEmailsForPrebank(table) {
@@ -116,36 +88,19 @@ async function sendEmailsForBank(table) {
     // Will be implemented in the future because YPC always prebanks now
 }
 
+function getPaymentMethod(player, mode) {
+    if(mode === "venmo") return player.venmo;
+    if(mode === "zelle") return player.zelle;
+    
+    if(player.venmo && player.zelle) return `${player.venmo} / ${player.zelle}`;
+    if(player.venmo) return player.venmo;
+    if(player.zelle) return player.zelle;
+    return "[no payment app]";
+}
+
 async function sendEmailsForTransfer(table) {
     const {nets, ins, outs} = getPlayerNets(table);
-
-    const ledgerSumsToZero = Object.values(nets).reduce((acc, curr) => acc + curr, 0) === 0;
-    if(!ledgerSumsToZero) {
-        console.error("Ledger does not sum to zero"); // should be prevented by frontend ui anyways
-        return;
-    }
-
-    // thanks, ken https://ken-ledger.herokuapp.com/
-    const transactions = [];
-    const ledger = {};
-
-    for(const player of Object.keys(nets)) ledger[player] = -nets[player];
-
-    while(Object.keys(ledger).length > 0) {
-        const minPlayer = Object.keys(ledger).reduce((a, b) => ledger[a] > ledger[b] ? a : b);
-        const maxPlayer = Object.keys(ledger).reduce((a, b) => ledger[a] > ledger[b] ? b : a);
-        const amount = Math.min(ledger[maxPlayer], Math.abs(ledger[minPlayer]));
-        ledger[maxPlayer] -= amount;
-        ledger[minPlayer] += amount;
-        if(ledger[maxPlayer] === 0) delete ledger[maxPlayer];
-        if(ledger[minPlayer] === 0) delete ledger[minPlayer];
-        if(amount === 0) continue;
-        transactions.push({
-            sender: minPlayer,
-            recipient: maxPlayer,
-            amount: Math.abs(amount),
-        });
-    }
+    const transactions = getDirectTransferTransactions(table);
 
     for(const playerId of Object.keys(table.players)) {
         const player = table.players[playerId];
@@ -155,10 +110,16 @@ async function sendEmailsForTransfer(table) {
 
         let transfers = "";
         transactions.filter(i => i.sender === playerId).forEach(i => {
-            transfers += `<li>Please send <b>$${displayCents(i.amount)}</b> to <b>${table.players[i.recipient].paymentApp}</b>.</li>`;
+            const recipient = table.players[i.recipient];
+            paymentApp = getPaymentMethod(recipient, i.method);
+
+            transfers += `<li>Please send <b>$${displayCents(i.amount)}</b> to <b>${recipient.name}</b>: <b>${paymentApp}</b>.</li>`;
         });
         transactions.filter(i => i.recipient === playerId).forEach(i => {
-            transfers += `<li>Expect a transfer of <b>$${displayCents(i.amount)}</b> from <b>${table.players[i.sender].paymentApp}</b>.</li>`;
+            const sender = table.players[i.sender];
+            const paymentApp = getPaymentMethod(sender, i.method);
+            
+            transfers += `<li>Expect a transfer of <b>$${displayCents(i.amount)}</b> from <b>${sender.name}</b>: <b>${paymentApp}</b>.</li>`;
         });
         if(transfers.length === 0) transfers = "<li>No action is required.</li>";
 
@@ -211,7 +172,6 @@ const validateEmail = (email) => {
 };
 
 module.exports = {
-    getPlayerNets,
     sendEmailsForBank,
     sendEmailsForPrebank,
     sendEmailsForTransfer,
