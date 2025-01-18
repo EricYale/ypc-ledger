@@ -51,7 +51,11 @@ function getDirectTransferTransactions(table) {
         const minPlayer = Object.keys(ledger).reduce((a, b) => ledger[a] > ledger[b] ? a : b);
         const maxPlayer = Object.keys(ledger).reduce((a, b) => ledger[a] > ledger[b] ? b : a);
         const amount = Math.min(ledger[maxPlayer], Math.abs(ledger[minPlayer]));
-        if(amount === 0) continue;
+        if(amount === 0) {
+            delete ledger[maxPlayer];
+            delete ledger[minPlayer];
+            continue;
+        }
         processTransaction(minPlayer, maxPlayer, amount, "any");
     }
 
