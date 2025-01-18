@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import style from "./stylesheets/TablePage.module.scss";
 import { API_URL, blindsDisplay, displayCents, toCents } from "../helpers/consts";
 import { useParams } from "react-router-dom";
@@ -7,6 +7,7 @@ import Button from "./Button";
 import Input from "./Input";
 import confetti from "canvas-confetti";
 import ChipDenoms from "./ChipDenoms";
+import Ledger from "./Ledger";
 
 const TablePage = () => {
     const {id} = useParams();
@@ -348,6 +349,7 @@ const TablePage = () => {
             }
             {showBuyInUI && buyInUI}
             {showBuyOutUI && buyOutUI}
+            <Ledger table={table} />
         </div>
     )
 };

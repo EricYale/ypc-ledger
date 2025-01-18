@@ -10,7 +10,7 @@ const DENOMS_10_20 = {
     black: 500,
 };
 const DENOMS_25_50 = {
-    white: 50,
+    white: 25,
     red: 100,
     blue: 500,
     black: 2500,

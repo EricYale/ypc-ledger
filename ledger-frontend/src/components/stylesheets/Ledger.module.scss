@@ -1,0 +1,22 @@
+@use "../../shared";
+
+#ledger_table {
+    margin-top: 50px;
+    width: 100%;
+    &, & th, & td {
+        padding: 7px;
+        border: 1px solid shared.$fg-color;
+        border-collapse: collapse;
+    }
+}
+.lost {
+    color: #FF0000;
+}
+.won {
+    color: #00FF00;
+}
+
+.link {
+    margin-left: 7px;
+    color: #5555FF;
+}

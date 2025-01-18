@@ -11,30 +11,10 @@
     padding: 30px;
     margin-top: 40px;
     border-radius: 10px;
-    #ledger_table {
-        margin-top: 50px;
-        width: 100%;
-        &, & th, & td {
-            padding: 7px;
-            border: 1px solid shared.$fg-color;
-            border-collapse: collapse;
-        }
-    }
-    .lost {
-        color: #FF0000;
-    }
-    .won {
-        color: #00FF00;
-    }
 }
 
 #sum {
     font-size: 20px;
-}
-
-.link {
-    margin-left: 7px;
-    color: #5555FF;
 }
 
 .error {

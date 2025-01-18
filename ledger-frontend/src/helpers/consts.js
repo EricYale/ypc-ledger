@@ -24,3 +24,25 @@ export function blindsDisplay({smallBlind, bigBlind}) {
     if(Math.max(bigBlind, smallBlind) < 100) return `${smallBlind}¢/${bigBlind}¢`;
     return `$${displayCents(smallBlind)}/$${displayCents(bigBlind)}`;
 };
+
+export function createLedgerObject(table) {
+    return Object.keys(table.players)
+        .map(playerId => {
+            return {
+                ...table.players[playerId],
+                id: playerId,
+                amount: table.transactions
+                    .filter(i => i.player === playerId)
+                    .reduce((acc, curr) => acc + curr.amount, 0),
+                in: table.transactions
+                    .filter(i => i.player === playerId)
+                    .filter(i => i.amount > 0)
+                    .reduce((acc, curr) => acc + curr.amount, 0),
+                out: table.transactions
+                    .filter(i => i.player === playerId)
+                    .filter(i => i.amount < 0)
+                    .reduce((acc, curr) => acc + curr.amount, 0),
+            }
+        })
+        .sort((a, b) => a.amount - b.amount);
+}

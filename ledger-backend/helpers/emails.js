@@ -35,9 +35,61 @@ async function sendEmail(to, subject, body) {
     await ses.send(sendCommand);
 }
 
+function generateLedger(table) {
+    let tr = "";
+    
+    for(const playerId of Object.keys(table.players)) {
+        const player = {
+            ...table.players[playerId],
+            id: playerId,
+            amount: table.transactions
+                .filter(i => i.player === playerId)
+                .reduce((acc, curr) => acc + curr.amount, 0),
+            in: table.transactions
+                .filter(i => i.player === playerId)
+                .filter(i => i.amount > 0)
+                .reduce((acc, curr) => acc + curr.amount, 0),
+            out: table.transactions
+                .filter(i => i.player === playerId)
+                .filter(i => i.amount < 0)
+                .reduce((acc, curr) => acc + curr.amount, 0),
+        };
+
+        tr += `
+            <tr>
+                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">${player.name}</td>
+                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">${player.venmo} ${player.zelle}</td>
+                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">${player.email}</td>
+                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">$${displayCents(player.in)}</td>
+                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">$${displayCents(-player.out)}</td>
+                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse; color: ${player.amount > 0 ? "red" : "green"};">
+                    $${displayCents(-player.amount)}
+                </td>
+            </tr>
+        `;
+    }
+
+    const ret = `
+        <table style="width: 100%;">
+            <tr>
+                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Name</th>
+                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Venmo/Zelle</th>
+                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Email</th>
+                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">In</th>
+                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Out</th>
+                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Net</th>
+            </tr>
+            ${tr}
+        </table>
+    `;
+
+    return ret;
+}
+
 async function sendEmailsForPrebank(table) {
     const {nets, ins, outs} = getPlayerNets(table);
-    
+    const ledgerString = generateLedger(table);
+
     for(const playerId of Object.keys(table.players)) {
         const player = table.players[playerId];
         const subject = `Thanks for playing at ${table.eventName}`;
@@ -77,6 +129,10 @@ async function sendEmailsForPrebank(table) {
                         </p>
                         ${playerReconciled ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
                     </div>
+                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
+                        <h3>Ledger</h3>
+                        ${ledgerString}
+                    </div>
                 </body>
             </html>
         `;
@@ -101,6 +157,17 @@ function getPaymentMethod(player, mode) {
 async function sendEmailsForTransfer(table) {
     const {nets, ins, outs} = getPlayerNets(table);
     const transactions = getDirectTransferTransactions(table);
+    const ledgerString = generateLedger(table);
+
+    let allTransactionsString = "";
+    transactions.forEach(i => {
+        const sender = table.players[i.sender];
+        const recipient = table.players[i.recipient];
+        const senderPaymentApp = getPaymentMethod(sender, i.method);
+        const recipientPaymentApp = getPaymentMethod(recipient, i.method);
+
+        allTransactionsString += `<li>${sender.name} (${senderPaymentApp}) pays ${recipient.name} (${recipientPaymentApp}) $${displayCents(i.amount)}</li>`;
+    })
 
     for(const playerId of Object.keys(table.players)) {
         const player = table.players[playerId];
@@ -155,6 +222,16 @@ async function sendEmailsForTransfer(table) {
                             ${transfers}
                         </ul>
                         ${playerReconciled ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
+                    </div>
+                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
+                        <h3>Ledger</h3>
+                        ${ledgerString}
+                    </div>
+                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
+                        <h3>Transfers</h3>
+                        <ul style="display: inline-block;">
+                            ${allTransactionsString}
+                        </ul>
                     </div>
                 </body>
             </html>
