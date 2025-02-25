@@ -14,6 +14,11 @@ const TableCard = ({ tableData }) => {
     }, [tableData]);
 
     const blindsText = blindsDisplay(tableData);
+    const createdAtString = new Date(tableData.createdAt).toLocaleDateString("en-US", {
+        month: "long",
+        day: "2-digit",
+        year: "numeric"
+    }); 
 
     return (
         <Link to={`/table/${tableData.id}`} className={style.link}>
@@ -23,7 +28,7 @@ const TableCard = ({ tableData }) => {
                     {tableData.eventName}
                 </p>
                 <h2>{blindsText} · {tableData.gameType} · Table {tableData.tableNumber}</h2>
-                <p className={style.date}>October 31, 2024</p>
+                <p className={style.date}>{createdAtString}</p>
             </div>
         </Link>
     );

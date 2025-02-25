@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import style from "./stylesheets/TablePage.module.scss";
 import { API_URL, blindsDisplay, displayCents, toCents } from "../helpers/consts";
 import { useParams } from "react-router-dom";
-import { getUID, getToken } from "../helpers/localStorage";
+import { getUID, getToken, getSavedAdminPassword } from "../helpers/localStorage";
 import Button from "./Button";
 import Input from "./Input";
 import confetti from "canvas-confetti";
@@ -24,6 +24,7 @@ const TablePage = () => {
     const [error, setError] = React.useState(null);
     const uid = getUID();
     const token = getToken();
+    const isAdmin = getSavedAdminPassword() != null;
 
     const fetchTables = async () => {
         let res;
@@ -213,6 +214,9 @@ const TablePage = () => {
             </div>
         )
     }
+
+    const adminLink = isAdmin && <p className={style.admin_link}><a href={`/table/${id}/admin`}>Manage table</a></p>;
+
     if(table.closedAt !== null) {
         return (
             <div id={style.table_page}>
@@ -220,6 +224,7 @@ const TablePage = () => {
                 {
                     error && <p className={style.error}>{error}</p>
                 }
+                {adminLink}
             </div>
         )
     }
@@ -263,6 +268,7 @@ const TablePage = () => {
                 {
                     error && <p className={style.error}>{error}</p>
                 }
+                {adminLink}
             </div>
         )
     }
@@ -350,6 +356,7 @@ const TablePage = () => {
             {showBuyInUI && buyInUI}
             {showBuyOutUI && buyOutUI}
             <Ledger table={table} />
+            {adminLink}
         </div>
     )
 };

@@ -20,3 +20,11 @@
 .error {
     color: red;
 }
+
+.admin_link {
+    font-size: 15px;
+    margin-top: 30px;
+    a {
+        color: shared.$fg-color;
+    }
+}
