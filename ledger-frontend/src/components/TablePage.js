@@ -41,6 +41,7 @@ const TablePage = () => {
         }
         const json = await res.json();
         setTables(json);
+        if(buyInAmount === 0) setBuyInAmount(json.buyIn);
     };
 
     const addUserToTable = async () => {
@@ -81,6 +82,7 @@ const TablePage = () => {
         }
         setError(null);
         await fetchTables();
+        await buyIn();
     };
 
     const buyIn = async () => {
@@ -261,6 +263,13 @@ const TablePage = () => {
                     placeholder="1-800-PRE-FLOP"
                     value={zelle}
                     onChange={e => setZelle(e.target.value)}
+                />
+                <Input
+                    largeInput
+                    label="Buy-in"
+                    placeholder={displayCents(table.bigBlind * 100)}
+                    value={buyInAmount}
+                    onChange={e => setBuyInAmount(e.target.value)}
                 />
                 <Button onClick={addUserToTable}>
                     Let's play!
