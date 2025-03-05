@@ -159,6 +159,11 @@ async function sendEmailsForTransfer(table) {
     const transactions = getDirectTransferTransactions(table);
     const ledgerString = generateLedger(table);
 
+    if(!transactions) {
+        console.error("Failed to get transfer transactions, perhaps the algorithm failed?");
+        return;
+    }
+
     let allTransactionsString = "";
     transactions.forEach(i => {
         const sender = table.players[i.sender];
