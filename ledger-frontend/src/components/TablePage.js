@@ -41,7 +41,6 @@ const TablePage = () => {
         }
         const json = await res.json();
         setTables(json);
-        if(buyInAmount === 0) setBuyInAmount(json.buyIn);
     };
 
     const addUserToTable = async () => {
@@ -51,6 +50,11 @@ const TablePage = () => {
         }
         if(!venmo && !zelle) {
             setError("Please enter your Venmo and/or Zelle");
+            return;
+        }
+        console.log(buyInAmount);
+        if(!buyInAmount) {
+            setError("Please enter a buy-in amount");
             return;
         }
         setError(null);
@@ -180,6 +184,13 @@ const TablePage = () => {
     useEffect(() => {
         fetchTables();
     }, []);
+
+    useEffect(() => {
+        if(tables && tables[id] && buyInAmount === 0) {
+            setBuyInAmount(tables[id].bigBlind);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tables]);
 
     const fileRef = useRef(null);
 
