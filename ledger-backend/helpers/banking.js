@@ -28,39 +28,54 @@ function getPlayerNets(table) {
 }
 
 function getDirectTransferTransactions(table) {
+    console.log(table);
     const { nets } = getPlayerNets(table);
-
+    const netsArray = Object.keys(nets)
+        .map(k => ({id: k, net: nets[k]}))
+        .filter(k => k.net !== 0);
+    netsArray.sort((a, b) => b.net - a.net); // desc
     const transactions = [];
-    const ledger = {};
-
-    const ledgerSum = Object.values(ledger).reduce((acc, curr) => acc + curr, 0);
-    if(ledgerSum !== 0) throw new Error("Ledger does not sum to zero");
-
-    // Copy ledger, and invert it for clarity (so if you're up, it's positive)
-    for(const player of Object.keys(nets)) ledger[player] = -nets[player];
     
-    function processTransaction(sender, recipient, amount, method) {
-        ledger[recipient] -= amount;
-        ledger[sender] += amount;
-        if(ledger[recipient] === 0) delete ledger[recipient];
-        if(ledger[sender] === 0) delete ledger[sender];
-        transactions.push({ sender, recipient, amount: Math.abs(amount), method });
-    }
-    console.log(ledger);
-    while(Object.keys(ledger).length > 0) {
-        const minPlayer = Object.keys(ledger).reduce((a, b) => ledger[a] > ledger[b] ? a : b);
-        const maxPlayer = Object.keys(ledger).reduce((a, b) => ledger[a] > ledger[b] ? b : a);
-        const amount = Math.min(ledger[maxPlayer], Math.abs(ledger[minPlayer]));
-        if(amount === 0) {
-            delete ledger[maxPlayer];
-            delete ledger[minPlayer];
-            continue;
-        }
-        processTransaction(minPlayer, maxPlayer, amount, "any");
-    }
+    while(netsArray.length > 1) {
+        const biggestWinner = netsArray[0];
+        const biggestLoser = netsArray[netsArray.length - 1];
+        const amount = Math.min(biggestWinner.net, -biggestLoser.net);
+        biggestWinner.net -= amount;
+        biggestLoser.net += amount;
 
+        transactions.push({
+            sender: biggestLoser.id,
+            recipient: biggestWinner.id,
+            amount,
+            method: "any",
+        });
+
+        if(Math.abs(biggestWinner.net) === 0) netsArray.shift();
+        if(netsArray.length > 0 && Math.abs(biggestLoser.net) === 0) netsArray.pop();
+    }
+    transactions.sort((a, b) => b.amount - a.amount);
+    console.log(transactions);
+    if(!transactionsSanityCheck(transactions, table, nets)) {
+        console.error("Sanity check failed!");
+        return null;
+    }
     return transactions;
 }
+
+function transactionsSanityCheck(transactions, table, nets) {
+    for(const player of Object.keys(table.players)) {
+        if(!(player in nets)) continue;
+        const playerSends = transactions.filter(t => t.sender === player);
+        const playerReceives = transactions.filter(t => t.recipient === player);
+        const totalSent = playerSends.reduce((acc, curr) => acc + curr.amount, 0);
+        const totalReceived = playerReceives.reduce((acc, curr) => acc + curr.amount, 0);
+        const expectedNet = nets[player];
+        const actualNet = totalReceived - totalSent;
+        if(expectedNet !== actualNet) return false;
+    }
+    return true;
+}
+
 
 module.exports = {
     displayCents,
