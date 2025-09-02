@@ -8,6 +8,12 @@
         border: 1px solid shared.$fg-color;
         border-collapse: collapse;
     }
+    @include shared.mobile {
+        font-size: 12px;
+        &, & th, & td {
+            padding: 3px;
+        }
+    }
 }
 .lost {
     color: #FF0000;

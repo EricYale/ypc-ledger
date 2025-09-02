@@ -5,9 +5,14 @@
     flex-direction: row;
     justify-content: space-between;
     gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
 }
 .label {
-    font-size: 30px;
+    font-size: 20px;
+    @include shared.mobile {
+        font-size: 37px;
+    }
 }
 .input {
     font-family: "Nunito Sans", sans-serif;
@@ -15,18 +20,28 @@
     border: none;
     border-bottom: 5px dotted shared.$fg-color;
     color: shared.$fg-color;
-    padding: 0.5rem 0;
+    padding: 20px 0;
     display: inline;
-    font-size: 30px;
+    font-size: 20px;
     width: 25%;
+    @include shared.mobile {
+        font-size: 37px;
+        padding-bottom: 20px;
+    }
 
     &:focus {
         outline: none;
     }
     &.large {
         width: 60%;
+        @include shared.mobile {
+            width: 50%;
+        }
     }
     &.file {
         font-size: 12px;
+        @include shared.mobile {
+            font-size: 10px;
+        }
     }
 }

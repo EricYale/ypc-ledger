@@ -7,13 +7,29 @@
     justify-content: center;
     gap: 20px;
     margin: 40px 0;
+    @include shared.mobile {
+        gap: 40px;
+        margin: 80px 20px;
+    }
+    p {
+        margin: 0;
+    }
 }
 .denom {
     font-size: 20px;
+    @include shared.mobile {
+        font-size: 50px;
+    }
 }
 .stack {
     font-size: 15px;
+    @include shared.mobile {
+        font-size: 30px;
+    }
 }
 .chip_image {
     width: 80px;
+    @include shared.mobile {
+        width: 100px;
+    }
 }

@@ -90,6 +90,12 @@ const CreateTableModal = ({ setError, usedTableNumbers }) => {
         { value: "D", label: "Table D" },
         { value: "E", label: "Table E" },
         { value: "F", label: "Table F" },
+        { value: "G", label: "Table G" },
+        { value: "H", label: "Table H" },
+        { value: "I", label: "Table I" },
+        { value: "J", label: "Table J" },
+        { value: "K", label: "Table K" },
+        { value: "L", label: "Table L" },
     ];
     const BLINDS_OPTIONS = [
         { value: ".05/.10", label: "5¢/10¢" },

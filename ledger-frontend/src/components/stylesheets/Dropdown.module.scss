@@ -1,13 +1,19 @@
 @use "../../shared";
 
+
 .dropdown_container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
 }
 .label {
     font-size: 30px;
+    @include shared.mobile {
+        font-size: 37px;
+    }
 }
 .dropdown {
     font-family: "Nunito Sans", sans-serif;
@@ -19,8 +25,18 @@
     display: inline;
     font-size: 30px;
     width: 25%;
-
-    option {
-
+    @include shared.mobile {
+        font-size: 37px;
+        padding-bottom: 20px;
+        width: 50%;
+    }
+    &:focus {
+        outline: none;
+    }
+    &.large {
+        width: 60%;
+        @include shared.mobile {
+            width: 50%;
+        }
     }
 }

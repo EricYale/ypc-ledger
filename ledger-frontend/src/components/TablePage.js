@@ -277,7 +277,7 @@ const TablePage = () => {
                 />
                 <Input
                     largeInput
-                    label="Buy-in"
+                    label="Buy-in ($)"
                     placeholder={displayCents(table.bigBlind * 100)}
                     value={buyInAmount}
                     onChange={e => setBuyInAmount(e.target.value)}

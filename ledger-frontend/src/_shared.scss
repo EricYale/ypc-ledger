@@ -6,11 +6,6 @@ $bg-color: #000000;
 $SMALL_DESKTOP_WIDTH: 1200px;
 $MOBILE_WIDTH: 1000px;
 
-body {
-    background-color: $bg-color;
-    font-family: "Nunito Sans", sans-serif;
-}
-
 @mixin mobile() {
     @media ( max-width: $MOBILE_WIDTH ) {
         @content;
@@ -29,5 +24,15 @@ body {
     }
     @include small_desktop(){
         padding: 50px 15vw;
+    }
+}
+
+
+body {
+    background-color: $bg-color;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 20px;
+    @include mobile() {
+        font-size: 25px;
     }
 }
