@@ -29,7 +29,7 @@ async function sendEmail(to, subject, body) {
                 Data: subject,
             },
         },
-        Source: `"Eric Yoon" <eric.yoon@yale.edu>`,
+        Source: `"YPC Ledger" <ledger@yalepokerclub.com>`,
     });
 
     await ses.send(sendCommand);

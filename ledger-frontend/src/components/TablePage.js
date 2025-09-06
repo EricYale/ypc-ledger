@@ -58,6 +58,8 @@ const TablePage = () => {
             return;
         }
         setError(null);
+        // eslint-disable-next-line no-restricted-globals
+        if(!confirm(`This table will use a banker. Please prepay the banker before getting chips. Did you send $${buyInAmount} to @eryoon (Venmo) / 323-440-6768 (Zelle)?`)) return;
         let res;
         try {
             res = await fetch(API_URL + "/api/join_table", {
