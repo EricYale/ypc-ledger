@@ -94,8 +94,8 @@ async function sendEmailsForPrebank(table) {
         const player = table.players[playerId];
         const subject = `Thanks for playing at ${table.eventName}`;
         const playerNet = nets[playerId];
-        const playerReconciledMoneyRemoved = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount < 0);
-        const playerReconciledMoneyAdded = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount > 0);
+        const playerReconciledMoneyRemoved = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount > 0);
+        const playerReconciledMoneyAdded = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount < 0);
 
         const body = `
             <html>
@@ -180,8 +180,8 @@ async function sendEmailsForTransfer(table) {
         const player = table.players[playerId];
         const subject = `Thanks for playing at ${table.eventName}, Table ${table.tableNumber}`;
         const playerNet = nets[playerId];
-        const playerReconciledMoneyRemoved = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount < 0);
-        const playerReconciledMoneyAdded = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount > 0);
+        const playerReconciledMoneyRemoved = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount > 0);
+        const playerReconciledMoneyAdded = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount < 0);
 
         let transfers = "";
         transactions.filter(i => i.sender === playerId).forEach(i => {
