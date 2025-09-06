@@ -94,7 +94,8 @@ async function sendEmailsForPrebank(table) {
         const player = table.players[playerId];
         const subject = `Thanks for playing at ${table.eventName}`;
         const playerNet = nets[playerId];
-        const playerReconciled = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation);
+        const playerReconciledMoneyRemoved = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount < 0);
+        const playerReconciledMoneyAdded = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount > 0);
 
         const body = `
             <html>
@@ -127,7 +128,8 @@ async function sendEmailsForPrebank(table) {
                         <p>
                             ${playerNet > 0 ? "Expect a Venmo to arrive from the banker. No action is required." : "No action is required."}
                         </p>
-                        ${playerReconciled ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
+                        ${playerReconciledMoneyRemoved ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
+                        ${playerReconciledMoneyAdded ? "<p>This ledger had a discrepancy resulting in extra money in the system. Since you were the biggest winner, you were awarded the difference. It's your lucky day!</p>" : ""}
                     </div>
                     <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
                         <h3>Ledger</h3>
@@ -178,7 +180,8 @@ async function sendEmailsForTransfer(table) {
         const player = table.players[playerId];
         const subject = `Thanks for playing at ${table.eventName}, Table ${table.tableNumber}`;
         const playerNet = nets[playerId];
-        const playerReconciled = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation);
+        const playerReconciledMoneyRemoved = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount < 0);
+        const playerReconciledMoneyAdded = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount > 0);
 
         let transfers = "";
         transactions.filter(i => i.sender === playerId).forEach(i => {
@@ -226,7 +229,8 @@ async function sendEmailsForTransfer(table) {
                         <ul style="display: inline-block;">
                             ${transfers}
                         </ul>
-                        ${playerReconciled ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
+                        ${playerReconciledMoneyRemoved ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
+                        ${playerReconciledMoneyAdded ? "<p>This ledger had a discrepancy resulting in extra money in the system. Since you were the biggest winner, you were awarded the difference. It's your lucky day!</p>" : ""}
                     </div>
                     <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
                         <h3>Ledger</h3>
