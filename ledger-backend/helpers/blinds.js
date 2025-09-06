@@ -53,6 +53,12 @@ const BLINDS = {
         smallBlind: 0,
         bigBlind: 0,
     },
+    ".02/.05": {
+        denoms: DENOMS_5_10, // TODO
+        startingStack: STARTING_STACK_5_10,
+        smallBlind: 2,
+        bigBlind: 5,
+    },
     ".05/.10": {
         denoms: DENOMS_5_10,
         startingStack: STARTING_STACK_5_10,

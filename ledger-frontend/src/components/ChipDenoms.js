@@ -4,7 +4,7 @@ import ChipImg from "../resources/redchip.png";
 import { CHIP_COLOR_FILTERS, displayCents } from "../helpers/consts";
 
 const ChipDenoms = ({ denoms, startingStack }) => {
-
+    return null;
     if(!denoms || !startingStack) return null;
 
     const chips = Object.keys(denoms).map(color => {
