@@ -94,7 +94,7 @@ function saveTable(id) {
     });
 }
 
-function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, bankingMode, denominations, startingStack }) {
+function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, bankingMode, bankerVenmo, bankerZelle, denominations, startingStack }) {
     const dateStr = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
     const randomUUID = uuid();
     const id = `${dateStr}_${smallBlind}-${bigBlind}_${randomUUID}`;
@@ -110,6 +110,8 @@ function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, b
         smallBlind,
         bigBlind,
         bankingMode,
+        bankerVenmo,
+        bankerZelle,
         players: {},
         transactions: [],
         denominations,

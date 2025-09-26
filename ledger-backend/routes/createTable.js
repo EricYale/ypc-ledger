@@ -3,7 +3,7 @@ const { BLINDS } = require("../helpers/blinds");
 const { createTable } = require("../helpers/localStorage");
 
 async function createTableRoute(req, res, next) {
-    const { eventName, blinds, adminPassword, tableNumber, bankingMode } = req.body;
+    const { eventName, blinds, adminPassword, tableNumber, bankingMode, bankerVenmo, bankerZelle } = req.body;
     if(!eventName || !blinds || !tableNumber || !bankingMode) {
         return res.status(400).send("Missing required fields");
     }
@@ -21,6 +21,8 @@ async function createTableRoute(req, res, next) {
         smallBlind,
         bigBlind,
         bankingMode,
+        bankerVenmo,
+        bankerZelle,
         denominations: denoms,
         startingStack,
     });

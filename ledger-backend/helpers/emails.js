@@ -92,7 +92,7 @@ async function sendEmailsForPrebank(table) {
 
     for(const playerId of Object.keys(table.players)) {
         const player = table.players[playerId];
-        const subject = `Thanks for playing at ${table.eventName}`;
+        const subject = `Thanks for playing at ${table.eventName}, Table ${table.tableNumber}`;
         const playerNet = nets[playerId];
         const playerReconciledMoneyRemoved = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount > 0);
         const playerReconciledMoneyAdded = table.transactions.filter(i => i.player === playerId).some(i => i.reconciliation && i.amount < 0);

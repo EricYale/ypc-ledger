@@ -21,6 +21,7 @@ const TablePage = () => {
     const [buyOutAmount, setBuyOutAmount] = React.useState(0);
     const [buyInAmount, setBuyInAmount] = React.useState(0);
     const [successChipUrl, setSuccessChipUrl] = React.useState(null);
+    const [showBankerPrepayConfirmation, setShowBankerPrepayConfirmation] = React.useState(false);
     const [error, setError] = React.useState(null);
     const uid = getUID();
     const token = getToken();
@@ -58,8 +59,6 @@ const TablePage = () => {
             return;
         }
         setError(null);
-        // eslint-disable-next-line no-restricted-globals
-        if(!confirm(`This table will use a banker. Please prepay the banker before getting chips. Did you send $${buyInAmount} to @eryoon (Venmo) / 323-440-6768 (Zelle)?`)) return;
         let res;
         try {
             res = await fetch(API_URL + "/api/join_table", {
@@ -88,7 +87,9 @@ const TablePage = () => {
         }
         setError(null);
         await fetchTables();
-        await buyIn();
+
+        if(tables[id].bankingMode === "banker-prepay") setShowBankerPrepayConfirmation(true);
+        else await buyIn();
     };
 
     const buyIn = async () => {
@@ -120,6 +121,7 @@ const TablePage = () => {
             return;
         }
         await fetchTables();
+        setShowBankerPrepayConfirmation(false);
     };
 
     const buyOut = async () => {
@@ -208,6 +210,7 @@ const TablePage = () => {
             </div>
         )
     }
+
     if(!tables) {
         return (
             <div id={style.table_page}>
@@ -228,6 +231,25 @@ const TablePage = () => {
                 }
             </div>
         )
+    }
+
+    if(showBankerPrepayConfirmation) {
+        return (
+            <div id={style.table_page}>
+                <h1>Buy In</h1>
+                <h2>You are buying in for ${buyInAmount}</h2>
+                <p>Please pre-pay the banker by sending ${buyInAmount} to:</p>
+                <p>Venmo: {tables[id].bankerVenmo}</p>
+                <p>Zelle: {tables[id].bankerZelle}</p>
+                <p>At the end of the game, the banker will pay you your cash out amount.</p>
+                <Button onClick={buyIn}>
+                    I've sent the payment
+                </Button>
+                {
+                    error && <p className={style.error}>{error}</p>
+                }
+            </div>
+        );
     }
 
     const adminLink = isAdmin && <p className={style.admin_link}><a href={`/table/${id}/admin`}>Manage table</a></p>;
@@ -333,7 +355,10 @@ const TablePage = () => {
                 value={buyInAmount}
                 onChange={e => setBuyInAmount(e.target.value)}
             />
-            <Button onClick={buyIn}>
+            <Button onClick={() => {
+                if(tables[id].bankingMode === "banker-prepay") setShowBankerPrepayConfirmation(true);
+                else buyIn();
+            }}>
                 Confirm
             </Button>
             <Button onClick={() => setShowBuyInUI(false)}>

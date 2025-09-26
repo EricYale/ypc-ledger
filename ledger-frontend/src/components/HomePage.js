@@ -8,6 +8,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import { getSavedAdminPassword } from "../helpers/localStorage";
 import Dropdown from "./Dropdown";
+import Input from "./Input";
 
 const HomePage = () => {
     const [tables, setTables] = React.useState(null);
@@ -117,11 +118,14 @@ const CreateTableModal = ({ setError, usedTableNumbers }) => {
     const [tableNumber, setTableNumber] = React.useState("");
     const [blinds, setBlinds] = React.useState(".05/.10");
     const [bankingMode, setBankingMode] = React.useState("banker-prepay");
+    const [bankerVenmo, setBankerVenmo] = React.useState("");
+    const [bankerZelle, setBankerZelle] = React.useState("");
     const [loading, setLoading] = React.useState(false);
     const password = getSavedAdminPassword();
 
     const createTable = async () => {
         if(!tableNumber || !blinds || !bankingMode) return;
+        if(!bankerVenmo && !bankerZelle && bankingMode === "banker-prepay") return;
         setLoading(true);
         const weekday = new Date().toLocaleString('en-us', {  weekday: 'long' });
         let res;
@@ -136,6 +140,8 @@ const CreateTableModal = ({ setError, usedTableNumbers }) => {
                     tableNumber,
                     blinds,
                     bankingMode,
+                    bankerVenmo,
+                    bankerZelle,
                     adminPassword: password,
                 }),
             });
@@ -181,6 +187,24 @@ const CreateTableModal = ({ setError, usedTableNumbers }) => {
                 selected={bankingMode}
                 onSelectedChange={setBankingMode}
             />
+            {
+                bankingMode === "banker-prepay" && (
+                    <>
+                        <Input
+                            label="Banker Venmo"
+                            valiue={bankerVenmo}
+                            onChange={e => setBankerVenmo(e.target.value)}
+                            placeholder="@nickribs"
+                        />
+                        <Input
+                            label="Banker Zelle"
+                            valiue={bankerZelle}
+                            onChange={e => setBankerZelle(e.target.value)}
+                            placeholder="1-800-NICK-RIBS"
+                        />
+                    </>
+                )
+            }
             <Button onClick={createTable}>
                 Create table
             </Button>
