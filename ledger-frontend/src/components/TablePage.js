@@ -236,12 +236,11 @@ const TablePage = () => {
     if(showBankerPrepayConfirmation) {
         return (
             <div id={style.table_page}>
-                <h1>Buy In</h1>
                 <h2>You are buying in for ${buyInAmount}</h2>
                 <p>Please pre-pay the banker by sending ${buyInAmount} to:</p>
                 <p>Venmo: {tables[id].bankerVenmo}</p>
                 <p>Zelle: {tables[id].bankerZelle}</p>
-                <p>At the end of the game, the banker will pay you your cash out amount.</p>
+                <p style={{ backgroundColor: "#FF0000" }}>Do NOT include "poker" or related words in your Venmo message!<br />(Just bc venmo is dumb)</p>
                 <Button onClick={buyIn}>
                     I've sent the payment
                 </Button>

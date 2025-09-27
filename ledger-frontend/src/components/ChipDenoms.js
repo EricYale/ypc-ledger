@@ -2,9 +2,18 @@ import React from "react";
 import style from "./stylesheets/ChipDenoms.module.scss";
 import ChipImg from "../resources/redchip.png";
 import { CHIP_COLOR_FILTERS, displayCents } from "../helpers/consts";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSheetPlastic } from "@fortawesome/free-solid-svg-icons";
 
 const ChipDenoms = ({ denoms, startingStack }) => {
-    return null;
+    return (
+        <p>
+            <a href="/reference.pdf" target="_blank" rel="noreferrer" id={style.cheat_sheet_link}>
+                <FontAwesomeIcon icon={faSheetPlastic} />
+                Texas Hold'Em Cheat Sheet
+            </a>
+        </p>
+    );
     if(!denoms || !startingStack) return null;
 
     const chips = Object.keys(denoms).map(color => {

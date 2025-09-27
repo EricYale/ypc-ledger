@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import style from "./stylesheets/HomePage.module.scss";
-import Logo from "../resources/logo_white.png";
+import Logo from "../resources/ypc_logo_white.png";
 import TableCard from "./TableCard";
 import { API_URL } from "../helpers/consts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
