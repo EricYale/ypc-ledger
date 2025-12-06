@@ -6,7 +6,7 @@ ssh -t ubuntu@193.122.147.106 << HERE
     rm -rf ledger-backend/public
 HERE
 
-pushd
+pushd .
 cd ledger-frontend
 npm run build
 popd
