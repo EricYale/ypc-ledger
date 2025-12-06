@@ -6,8 +6,14 @@ ssh -t ubuntu@193.122.147.106 << HERE
     rm -rf ledger-backend/public
 HERE
 
-scp -r public ubuntu@193.122.147.106:~/ypc/ledger-backend/public
+pushd
+cd ledger-frontend
+npm run build
+popd
+
+scp -r ledger-backend/public ubuntu@193.122.147.106:~/ypc/ledger-backend/public
 
 ssh -t ubuntu@193.122.147.106 << HERE
+    source ~/.nvm/nvm.sh
     pm2 restart ypc
 HERE
