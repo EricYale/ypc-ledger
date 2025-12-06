@@ -140,6 +140,7 @@ const AdminPage = () => {
     const ledger = createLedgerObject(table);
     const ledgerSum = ledger.reduce((acc, curr) => acc + curr.amount, 0);
     const ledgerSumsToZero = ledgerSum === 0;
+    const mailtoAllAddresses = Object.values(table.players).map(p => p.email).join(",");
 
     return (
         <div id={style.admin_page}>
@@ -168,6 +169,9 @@ const AdminPage = () => {
                 </span>
                 <Ledger table={table} />
             </div>
+            <a id={style.mailto} href={"mailto:" + mailtoAllAddresses} target="_blank" rel="noreferrer">
+                Email all players
+            </a>
             {
                 !table.closedAt && (
                     <Button onClick={closeTable}>

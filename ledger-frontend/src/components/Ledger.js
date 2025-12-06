@@ -18,7 +18,7 @@ const Ledger = ({ table }) => {
             <tr key={player.id}>
                 <td>{player.name}</td>
                 <td>{player.venmo} {player.zelle}</td>
-                <td>{player.email}</td>
+                <td className={player.email.includes("@yale.edu") ? "" : style.email_warning}>{player.email}</td>
                 <td>${displayCents(player.in)}</td>
                 <td>${displayCents(-player.out)}</td>
                 <td className={player.amount > 0 ? style.lost : style.won}>${displayCents(-player.amount)}</td>
