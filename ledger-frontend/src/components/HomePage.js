@@ -68,6 +68,7 @@ const HomePage = () => {
     return (
         <div id={style.home_page}>
             <img src={Logo} alt="Yale Student Poker Club" id={style.logo} />
+            <a href="/sharks"><p>NEW! View the YPC leaderboard</p></a>
             {
                 error && <p className={style.error}>{error}</p>
             }
