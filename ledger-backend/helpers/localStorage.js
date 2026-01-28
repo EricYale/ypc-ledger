@@ -88,39 +88,37 @@ function rehydrateRAM() {
     if (!fs.existsSync(tablesFolder)) fs.mkdirSync(tablesFolder, { recursive: true });
     if (!fs.existsSync(usersFolder)) fs.mkdirSync(usersFolder, { recursive: true });
 
-    fs.readdir(tablesFolder, (err, files) => {
-        if(err) throw new Error("Could not read tables folder");
-        
-        files.forEach(file => {
+    try {
+        const tableFiles = fs.readdirSync(tablesFolder);
+        tableFiles.forEach(file => {
             const filePath = path.join(tablesFolder, file);
             const filename = path.basename(file, ".json");
-            fs.readFile(filePath, "utf-8", (err, data) => {
-                if(err) throw new Error(`Could not read file ${file}`);
-                try {
-                    tables[filename] = JSON.parse(data);
-                } catch (err) {
-                    throw new Error(`Could not parse JSON from file ${file}`);
-                }
-            });
+            const data = fs.readFileSync(filePath, "utf-8");
+            try {
+                tables[filename] = JSON.parse(data);
+            } catch (err) {
+                throw new Error(`Could not parse JSON from file ${file}`);
+            }
         });
-    });
+    } catch (e) {
+        throw new Error("Could not read tables folder: " + e.message);
+    }
 
-    fs.readdir(usersFolder, (err, files) => {
-        if(err) throw new Error("Could not read users folder");
-
-        files.forEach(file => {
+    try {
+        const userFiles = fs.readdirSync(usersFolder);
+        userFiles.forEach(file => {
             const filePath = path.join(usersFolder, file);
             const filename = path.basename(file, ".json");
-            fs.readFile(filePath, "utf-8", (err, data) => {
-                if(err) throw new Error(`Could not read file ${file}`);
-                try {
-                    users[filename] = JSON.parse(data);
-                } catch (err) {
-                    throw new Error(`Could not parse JSON from file ${file}`);
-                }
-            });
+            const data = fs.readFileSync(filePath, "utf-8");
+            try {
+                users[filename] = JSON.parse(data);
+            } catch (err) {
+                throw new Error(`Could not parse JSON from file ${file}`);
+            }
         });
-    });
+    } catch (e) {
+        throw new Error("Could not read users folder: " + e.message);
+    }
 
     try {
         fs.writeFileSync(userTokensFile, "{}", { flag: 'wx' });
@@ -204,7 +202,7 @@ async function createUser(email) {
     return yaliesPerson.netId;
 }
 
-async function addTableToUserHistory(table, playerId, nets) {
+async function addTableToUserHistory(table, playerId, nets, skipSave = false) {
     const email = table.players[playerId].email;
     let netId = Object.keys(users).find(id => users[id].email === email);
     if(!netId) {
@@ -223,7 +221,7 @@ async function addTableToUserHistory(table, playerId, nets) {
 
     // Recompute stats
     user.stats = userHelper.computeStats(user.tableHistory);
-    saveUser(netId);
+    if (!skipSave) saveUser(netId);
     return true;
 }
 
@@ -298,4 +296,5 @@ module.exports = {
     addTableToUserHistory,
     setAddedToLeaderboard,
     createUser,
+    saveUser,
 };

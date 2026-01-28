@@ -9,7 +9,7 @@ async function fetchUserFromYalies(email) {
     try {
         people = await yalies.people({
             filters: {
-                email,
+                email: email.toLowerCase(),
             }
         });
     } catch(e) {

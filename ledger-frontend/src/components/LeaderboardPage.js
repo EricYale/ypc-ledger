@@ -82,10 +82,10 @@ const LeaderboardPage = () => {
                 <div className={style.info_box}>
                     <h3>{user.firstName} "{user.nickname}" {user.lastName}</h3>
                     <p>
-                        ${displayCents(user.totalProfit)} total earnings (${displayCents(bbProfit)} BB)
+                        ${displayCents(user.totalProfit)} total earnings ({bbProfit.toFixed(2)} BB)
                     </p>
                     <p>
-                        ${displayCents(dailyProfit)} per day ({displayCents(dailyProfitBB)} BB)
+                        ${displayCents(dailyProfit)} per day ({dailyProfitBB.toFixed(2)} BB)
                     </p>
                 </div>
             </div>

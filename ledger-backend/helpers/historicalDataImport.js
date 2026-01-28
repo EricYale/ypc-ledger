@@ -11,6 +11,7 @@ const path = require("path");
 const { rehydrateRAM, addTableToUserHistory, createUser, getLeaderboard } = require("./localStorage");
 
 const HISTORICAL_DATA_DIR = path.join(__dirname, "..", "data", "historical");
+const USERS_DIR = path.join(__dirname, "..", "data", "users");
 
 function getMostRecentFridayBefore(dateStr) {
     // dateStr format: YYYY-MM-DD
@@ -144,7 +145,7 @@ async function main() {
             };
 
             for (const row of rows) {
-                const email = row.Email;
+                const email = row.Email ? row.Email.toLowerCase() : null;
                 if (!email) continue;
                 allEmails.add(email);
                 
@@ -169,9 +170,12 @@ async function main() {
     // 2. Identify missing users and create them in parallel
     const users = getLeaderboard();
     const missingEmails = [];
+    console.log(users);
     for (const email of allEmails) {
         const existing = Object.values(users).find(u => u.email === email);
-        if (!existing) {
+        if (existing) {
+            existing.tableHistory = [];
+        } else {
             missingEmails.push(email);
         }
     }
@@ -214,11 +218,24 @@ async function main() {
         await Promise.all(playerIds.map(async (playerId) => {
             try {
                 // Should return quickly as user exists
-                await addTableToUserHistory(table, playerId, nets);
+                // pass true to skipSave to avoid huge disk I/O during loop
+                await addTableToUserHistory(table, playerId, nets, true);
             } catch (e) {
                 console.error(`Error adding history for ${playerId}:`, e.message);
             }
         }));
+    }
+    
+    // 4. Save all users to disk
+    console.log("Saving all users to disk...");
+    const allUsers = getLeaderboard();
+    for (const [netId, userData] of Object.entries(allUsers)) {
+        const filePath = path.join(USERS_DIR, `${netId}.json`);
+        try {
+            fs.writeFileSync(filePath, JSON.stringify(userData, null, 2));
+        } catch (e) {
+             console.error(`Failed to save user ${netId}:`, e.message);
+        }
     }
     
     console.log("Import complete.");
