@@ -5,9 +5,11 @@ import { useEffect } from "react";
 import SharkImage from "../resources/shark.png";
 import FishImage from "../resources/fish.png";
 import WhaleImage from "../resources/whale.png";
+import WinLossGraph from "./WinLossGraph";
 
 const LeaderboardPage = () => {
     const [users, setUsers] = React.useState(null);
+    const [displayedUserModal, setDisplayedUserModal] = React.useState(null);
 
     const fetchLeaderboard = async () => {
         let json;
@@ -73,6 +75,8 @@ const LeaderboardPage = () => {
                 filter: `hue-rotate(${hueRotate}deg)`,
                 "--bob-period": `${bobPeriod}s`,
                 "--bob-delay": `${bobDelay}s`,
+            }} onClick={() => {
+                setDisplayedUserModal(user);
             }}>
                 <img src={image} alt={`${user.firstName} ${user.lastName}`} />
                 <div className={style.info_box}>
@@ -88,8 +92,19 @@ const LeaderboardPage = () => {
         )
     });
 
+    const modal = displayedUserModal && (
+        <div id={style.user_modal_shade} onClick={() => setDisplayedUserModal(null)}>
+            <div id={style.user_modal} onClick={e => e.stopPropagation()}>
+                <h1>{displayedUserModal.firstName} "{displayedUserModal.nickname}" {displayedUserModal.lastName}</h1>
+                <WinLossGraph user={displayedUserModal} />
+            </div>
+        </div>
+    );
+
+
     return (
         <div id={style.leaderboard_page}>
+            {modal}
             <div id={style.sky}>
                 <h1>YPC's Biggest Sharks</h1>
             </div>

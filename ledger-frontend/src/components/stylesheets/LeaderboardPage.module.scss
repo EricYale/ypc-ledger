@@ -35,6 +35,7 @@
 
 .sea_creature {
     position: absolute;
+    cursor: pointer;
     img {
         animation: bob var(--bob-period, 2s) infinite alternate ease-in-out;
         animation-delay: var(--bob-delay, 0s);
@@ -57,4 +58,26 @@
         margin: 0;
         font-size: 13px;
     }
+}
+
+#user_modal_shade {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#user_modal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    min-width: 60vw;
+    color: #000000;
 }
