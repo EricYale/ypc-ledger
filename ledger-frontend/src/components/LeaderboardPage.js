@@ -43,9 +43,9 @@ const LeaderboardPage = () => {
 
     const seaCreatures = users.map((user, i) => {
         const bottomXpercent = (i / users.length) * 100;
-        const yPos = (i / users.length) * 95 + 5;
+        const yPos = (i / users.length) * 95;
         const hueRotate = generateHash(user.email + "color") % 360;
-        const xPos = Math.abs(generateHash(user.email + "xpos") % 60) + 5;
+        const xPos = Math.abs(generateHash(user.email + "xpos") % 80) + 5;
         const bobPeriod = (Math.abs(generateHash(user.email + "bob") % 300) + 200) / 100;
         const bobDelay = (Math.abs(generateHash(user.email + "bob_delay") % 500) / 100);
         let image;

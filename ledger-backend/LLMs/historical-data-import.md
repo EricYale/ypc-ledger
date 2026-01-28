@@ -11,3 +11,5 @@ On startup, the backend should list all .csv files from data/historical. Then, i
 Finally, replicate the behavior of addTableToUserHistory, but for these CSVs. You should use the createUser I already wrote in localStorage.js. You should add each user that appears in any of the CSVs. (If the Yalies API call fails just skip them)
 
 Quarantine your code to historicalDataImport.js, do NOT modify any other files. If you need to duplicate code by bringing it into the file that is better than modifying my other code.
+
+You can look at one of the CSV files in data/historical for reference of what the data looks like.
