@@ -1,0 +1,58 @@
+@use "../../shared";
+@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap');
+
+#leaderboard_page {
+    color: shared.$fg-color;
+    text-align: center;
+    height: 800vh;
+    background-image: linear-gradient(#52a8ff, #000047);
+}
+
+#sky {
+    mask: linear-gradient(0,#0000 74px,#000 0), radial-gradient(74px,#000 calc(100% - 1px),#0000) bottom/136.9px 148px;
+    background-image: linear-gradient(#adf8ff, #FFFFFF);
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+        color: #4800ff;
+        font-size: 48px;
+        font-family: 'Cherry Bomb One', cursive;
+    }
+}
+
+#ocean {
+    position: relative;
+    height: 750vh;
+}
+
+@keyframes bob {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-60px); }
+}
+
+.sea_creature {
+    position: absolute;
+    img {
+        animation: bob var(--bob-period, 2s) infinite alternate ease-in-out;
+        animation-delay: var(--bob-delay, 0s);
+    }
+    &.whale img {
+        max-width: 500px;
+    }
+    &.fish img {
+        max-width: 200px;
+    }
+    &.shark img {
+        max-width: 500px;
+    }
+    h3 {
+        margin: 5px;
+        text-transform: uppercase;
+    }
+    p {
+        margin: 0;
+    }
+}

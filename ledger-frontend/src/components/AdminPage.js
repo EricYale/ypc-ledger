@@ -53,7 +53,6 @@ const AdminPage = () => {
 
     const blindsText = blindsDisplay(table);
 
-    console.log(table, blindsText)
     const sendEmails = async () => {
         setTables(null);
         let resp;
@@ -132,6 +131,32 @@ const AdminPage = () => {
         await fetchTables();
     }
 
+    const postToLeaderboard = async () => {
+        setTables(null);
+        let res;
+        try {
+            res = await fetch(API_URL + "/api/update_leaderboard", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tableId: id,
+                    adminPassword: password,
+                }),
+            });
+        } catch(e) {
+            console.error("Could not post to leaderboard:", e);
+            setError("Could not post to leaderboard");
+            return;
+        }
+        if(!res.ok) {
+            setError(`Could not post to leaderboard: ${res.status} ${await res.text()}`);
+            return;
+        }
+        await fetchTables();
+    }
+
     if(!password) {
         window.location.href = "/pw?dest=" + encodeURIComponent(window.location.pathname);
         return null;
@@ -192,6 +217,13 @@ const AdminPage = () => {
                 !ledgerSumsToZero && (
                     <Button onClick={reconcileTable}>
                         Reconcile ledger
+                    </Button>
+                )
+            }
+            {
+                !table.addedToLeaderboard && (
+                    <Button onClick={postToLeaderboard}>
+                        Post to leaderboard
                     </Button>
                 )
             }

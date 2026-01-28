@@ -3,7 +3,7 @@ function displayCents(cents) {
     return (cents / 100).toFixed(2);
 }
 
-function getPlayerNets(table) {
+function getPlayerNets(table, skipReconciliation = false) {
     const nets = {};
     const ins = {};
     const outs = {};
@@ -12,16 +12,19 @@ function getPlayerNets(table) {
         // Nets are POSITIVE if you made money
         nets[playerId] = -1 * table.transactions
             .filter(i => i.player === playerId)
+            .filter(i => !skipReconciliation || !i.reconciliation)
             .reduce((acc, curr) => acc + curr.amount, 0);
         // Ins are ALWAYS POSITIVE
         ins[playerId] = table.transactions
             .filter(i => i.player === playerId)
             .filter(i => i.amount > 0)
+            .filter(i => !skipReconciliation || !i.reconciliation)
             .reduce((acc, curr) => acc + curr.amount, 0);
         // Outs are ALWAYS POSITIVE
         outs[playerId] = -1 * table.transactions
             .filter(i => i.player === playerId)
             .filter(i => i.amount < 0)
+            .filter(i => !skipReconciliation || !i.reconciliation)
             .reduce((acc, curr) => acc + curr.amount, 0);
     }
     return {nets, ins, outs};

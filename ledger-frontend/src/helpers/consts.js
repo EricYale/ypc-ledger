@@ -46,3 +46,13 @@ export function createLedgerObject(table) {
         })
         .sort((a, b) => a.amount - b.amount);
 }
+
+// https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+export const generateHash = (string) => {
+    let hash = 0;
+    for (const char of string) {
+        hash = (hash << 5) - hash + char.charCodeAt(0);
+        hash |= 0;
+    }
+    return hash;
+};

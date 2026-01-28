@@ -3,11 +3,16 @@ import AdminPasswordEntryPage from "../components/AdminPasswordEntryPage";
 import HomePage from "../components/HomePage";
 import TableNumberRedirectPage from "../components/TableNumberRedirectPage";
 import TablePage from "../components/TablePage";
+import LeaderboardPage from "../components/LeaderboardPage";
 
 const ROUTES = [
     {
         path: "/",
         element: <HomePage />,
+    },
+    {
+        path: "/sharks",
+        element: <LeaderboardPage />,
     },
     {
         path: "/table/:id",
