@@ -204,12 +204,16 @@ async function createUser(email) {
 
 async function addTableToUserHistory(table, playerId, nets, skipSave = false) {
     const email = table.players[playerId].email;
-    let netId = Object.keys(users).find(id => users[id].email === email);
+    let netId = Object.keys(users).find(id => users[id].email.toLowerCase() === email.toLowerCase());
     if(!netId) {
         netId = await createUser(email);
         if(!netId) return false;
     }
     const user = users[netId];
+
+    if(user.tableHistory.find(th => th.tableId === table.id)) {
+        return true;
+    }
     
     user.tableHistory.push({
         tableId: table.id,

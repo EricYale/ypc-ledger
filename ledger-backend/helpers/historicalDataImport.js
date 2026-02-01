@@ -172,11 +172,11 @@ async function main() {
     const missingEmails = [];
     console.log(users);
     for (const email of allEmails) {
-        const existing = Object.values(users).find(u => u.email === email);
+        const existing = Object.values(users).find(u => u.email.toLowerCase() === email.toLowerCase());
         if (existing) {
             existing.tableHistory = [];
         } else {
-            missingEmails.push(email);
+            missingEmails.push(email.toLowerCase());
         }
     }
     

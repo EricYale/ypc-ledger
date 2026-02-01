@@ -47,21 +47,25 @@ const LeaderboardPage = () => {
         const bottomXpercent = (i / users.length) * 100;
         const yPos = (i / users.length) * 95;
         const hueRotate = generateHash(user.email + "color") % 360;
-        const xPos = Math.abs(generateHash(user.email + "xpos") % 80) + 5;
+        const xPos = Math.abs(generateHash(user.email + "xpos") % 101);
         const bobPeriod = (Math.abs(generateHash(user.email + "bob") % 300) + 200) / 100;
         const bobDelay = (Math.abs(generateHash(user.email + "bob_delay") % 500) / 100);
         let image;
         let className;
+        let creatureWidth;
 
         if(bottomXpercent < 10) {
             image = WhaleImage;
             className = style.whale;
+            creatureWidth = 250;
         } else if(bottomXpercent < 80) {
             image = FishImage;
             className = style.fish;
+            creatureWidth = 100;
         } else {
             image = SharkImage;
             className = style.shark;
+            creatureWidth = 250;
         }
 
         const bbProfit = user.stats.totalBuyOutBigBlinds - user.stats.totalBuyInBigBlinds;
@@ -71,7 +75,7 @@ const LeaderboardPage = () => {
         return (
             <div className={`${style.sea_creature} ${className}`} key={i} style={{
                 top: `${yPos}%`,
-                left: `${xPos}%`,
+                left: `calc(${xPos}% - ${(xPos / 100) * creatureWidth}px)`,
                 filter: `hue-rotate(${hueRotate}deg)`,
                 "--bob-period": `${bobPeriod}s`,
                 "--bob-delay": `${bobDelay}s`,

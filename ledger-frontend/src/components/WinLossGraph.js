@@ -14,14 +14,33 @@ const WinLossGraph = ({ user }) => {
         // Sort history by date
         const sorted = [...user.tableHistory].sort((a, b) => new Date(a.date) - new Date(b.date));
 
+        // Aggregate by date
+        const dailyProfits = [];
+
+        sorted.forEach(entry => {
+            const dateObj = new Date(entry.date);
+            const dateStr = dateObj.toDateString();
+            const profitStr = (entry.buyOut - entry.buyIn);
+
+            const lastEntry = dailyProfits[dailyProfits.length - 1];
+
+            if (lastEntry && lastEntry.dateStr === dateStr) {
+                lastEntry.dailyProfit += profitStr;
+            } else {
+                dailyProfits.push({
+                    dateStr,
+                    dateObj,
+                    dailyProfit: profitStr
+                });
+            }
+        });
+
         let cumulative = 0;
-        return sorted.map((entry) => {
-            const profitStr = (entry.buyOut - entry.buyIn); 
-            // entry.buyIn/buyOut are in cents
-            cumulative += profitStr;
+        return dailyProfits.map((entry) => {
+            cumulative += entry.dailyProfit;
             return {
-                date: new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }),
-                fullDate: new Date(entry.date).toDateString(),
+                date: entry.dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' }),
+                fullDate: entry.dateStr,
                 profit: cumulative / 100, // Convert to dollars for display
             };
         });
