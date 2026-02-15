@@ -13,11 +13,13 @@ async function reconcileTableRoute(req, res, next) {
     }
 
     const {nets, outs} = getPlayerNets(table);
-    // Players who didn't lose their entire buy-in
-    const nonBankruptPlayers = Object.keys(table.players).filter(id => outs[id] > 0);
+    // Players who didn't lose their entire buy-in, and didn't net exactly 0
+    const reconciliationEligiblePlayers = Object.keys(table.players)
+        .filter(id => outs[id] > 0)
+        .filter(id => nets[id] !== 0);
 
-    if(nonBankruptPlayers.length === 0) {
-        res.status(200).send("No non-bankrupt players to reconcile");
+    if(reconciliationEligiblePlayers.length === 0) {
+        res.status(200).send("No eligible players to reconcile");
         return;
     }
 
