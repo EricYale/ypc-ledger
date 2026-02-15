@@ -23,7 +23,7 @@ async function reconcileTableRoute(req, res, next) {
         return;
     }
 
-    const topEarner = nonBankruptPlayers.reduce((a, b) => nets[a] > nets[b] ? a : b);
+    const topEarner = reconciliationEligiblePlayers.reduce((a, b) => nets[a] > nets[b] ? a : b);
     const fanumTaxTotal = Object.values(nets).reduce((acc, curr) => acc + curr, 0);
 
     if(fanumTaxTotal === 0) {
@@ -31,13 +31,13 @@ async function reconcileTableRoute(req, res, next) {
         return;
     }
     if(fanumTaxTotal > 0) {
-        if(nonBankruptPlayers.length === 0) {
+        if(reconciliationEligiblePlayers.length === 0) {
             res.status(500).send("Need at least one non-bankrupt player to reconcile");
             return;
         }
         // Money is missing, fanum tax each non-bankrupt player
-        const fanumTaxPerPlayer = Math.floor(fanumTaxTotal / nonBankruptPlayers.length);
-        nonBankruptPlayers.forEach(player => {
+        const fanumTaxPerPlayer = Math.floor(fanumTaxTotal / reconciliationEligiblePlayers.length);
+        reconciliationEligiblePlayers.forEach(player => {
             tables[tableId].transactions.push({
                 player,
                 amount: fanumTaxPerPlayer,
@@ -45,7 +45,7 @@ async function reconcileTableRoute(req, res, next) {
                 reconciliation: true,
             });
         });
-        const fanumTaxLeftover = fanumTaxTotal % nonBankruptPlayers.length;
+        const fanumTaxLeftover = fanumTaxTotal % reconciliationEligiblePlayers.length;
         // Fanum tax the biggest winner the extra amount, in case it doesn't divide equally
         tables[tableId].transactions.push({
             player: topEarner,
