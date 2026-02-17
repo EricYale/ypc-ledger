@@ -1,5 +1,4 @@
 require("dotenv").config();
-const https = require("https");
 const express = require("express");
 const createTableRoute = require("./routes/createTable");
 const getTablesRoute = require("./routes/getTables");
@@ -55,23 +54,11 @@ function initialize() {
         res.sendFile(path.resolve("public", "index.html"));
     });
 
-    if(process.env.NODE_ENV !== "development") {
-        const privateKey = fs.readFileSync(process.env.TLS_PRIV_KEY);
-        const cert = fs.readFileSync(process.env.TLS_CERT);
-        app = https.createServer({ key: privateKey, cert }, app);
-    }
-
-    const port = process.env.PORT || 443;
+    const port = process.env.PORT || 80;
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
+        if(port < 1024) console.warn("Running on a privileged port, may not work if not root");
     });
-
-    // redirect insecure to secure
-    const insecureApp = express();
-    insecureApp.get("*", (req, res) => {
-        res.redirect(`https://${req.headers.host}${req.url}`);
-    });
-    insecureApp.listen(80);
 }
 
 initialize();
