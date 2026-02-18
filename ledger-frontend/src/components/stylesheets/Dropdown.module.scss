@@ -10,7 +10,7 @@
     align-items: center;
 }
 .label {
-    font-size: 30px;
+    font-size: 20px;
     @include shared.mobile {
         font-size: 37px;
     }
@@ -23,12 +23,11 @@
     color: shared.$fg-color;
     padding: 0.5rem 0;
     display: inline;
-    font-size: 30px;
+    font-size: 20px;
     width: 25%;
     @include shared.mobile {
         font-size: 37px;
         padding-bottom: 20px;
-        width: 50%;
     }
     &:focus {
         outline: none;

@@ -54,9 +54,10 @@ function initialize() {
         res.sendFile(path.resolve("public", "index.html"));
     });
 
-    const port = process.env.PORT || 80;
+    const port = process.env.PORT || (process.env.NODE_ENV === "development" ? 1337 : 80);
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
+        console.log(`Running in environment ${process.env.NODE_ENV}`)
         if(port < 1024) console.warn("Running on a privileged port, may not work if not root");
     });
 }

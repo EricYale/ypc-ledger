@@ -4,8 +4,10 @@ const fs = require("fs");
 const { verifyUserToken } = require("../helpers/auth");
 
 async function buyOutRoute(req, res, next) {
-    const { userId, userToken, tableId, amount, chipPhoto } = req.body;
-    if(!userId || !tableId || typeof(amount) !== "number" || !chipPhoto) {
+    const { userId, userToken, tableId, amount, chipPhoto, checkedBy } = req.body;
+
+    if(!userId || !tableId || typeof(amount) !== "number" || !chipPhoto || !checkedBy) {
+        console.log("Missing fields in buy-out request:", req.body);
         return res.status(400).send("Missing required fields");
     }
     if(amount < 0) {
@@ -33,6 +35,7 @@ async function buyOutRoute(req, res, next) {
             amount: -amount,
             timestamp: new Date().toISOString(),
             chipPhoto,
+            checkedBy,
         });
     } catch(e) {
         return res.status(500).send(e.message);

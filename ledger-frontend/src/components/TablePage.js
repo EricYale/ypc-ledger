@@ -8,6 +8,8 @@ import Input from "./Input";
 import confetti from "canvas-confetti";
 import ChipDenoms from "./ChipDenoms";
 import Ledger from "./Ledger";
+import ChipExamplePhoto from "../resources/chip_example.jpg";
+import Dropdown from "./Dropdown";
 
 const TablePage = () => {
     const {id} = useParams();
@@ -19,6 +21,7 @@ const TablePage = () => {
     const [showBuyOutUI, setShowBuyOutUI] = React.useState(false);
     const [showBuyInUI, setShowBuyInUI] = React.useState(false);
     const [buyOutAmount, setBuyOutAmount] = React.useState(0);
+    const [buyOutCheckedBy, setBuyOutCheckedBy] = React.useState("none");
     const [buyInAmount, setBuyInAmount] = React.useState(0);
     const [successChipUrl, setSuccessChipUrl] = React.useState(null);
     const [showBankerPrepayConfirmation, setShowBankerPrepayConfirmation] = React.useState(false);
@@ -127,6 +130,10 @@ const TablePage = () => {
     const buyOut = async () => {
         const chipPhoto = fileRef.current.files[0];
         if(!chipPhoto) return;
+        if(buyOutCheckedBy === "none") {
+            setError("Please select a friend to check your buy-out");
+            return;
+        }
         const buyOutCents = toCents(parseFloat(buyOutAmount));
         const formData = new FormData();
         formData.append("chipImage", chipPhoto);
@@ -163,6 +170,7 @@ const TablePage = () => {
                     tableId: id,
                     amount: buyOutCents,
                     chipPhoto: chipUrl,
+                    checkedBy: buyOutCheckedBy,
                 }),
             });
         } catch(e) {
@@ -322,9 +330,29 @@ const TablePage = () => {
 
     const blindsText = blindsDisplay(table);
 
+    const checkedByOptions = Object.entries(table.players)
+        .filter(([playerId, player]) => playerId !== uid)
+        .map(([playerId, player]) => ({
+            value: playerId,
+            label: player.name,
+        }));
+    
+    checkedByOptions.unshift({
+        value: "none",
+        label: "",
+    });
+
     const buyOutUI = (
         <div id={style.buy_out_modal}>
             <h2>Buy out</h2>
+            <div id={style.buy_out_instructions}>
+                <ol>
+                    <li>Sort your chips by color</li>
+                    <li>Stack them into towers of 5 and <b>stagger them</b></li>
+                    <li>Have a friend check your buy-out</li>
+                </ol>
+                <img src={ChipExamplePhoto} alt="Example" />
+            </div>
             <Input
                 label="Chip stack ($)"
                 placeholder="25"
@@ -336,6 +364,7 @@ const TablePage = () => {
                 type="file"
                 ref={fileRef}
             />
+            <Dropdown label="Checked by" options={checkedByOptions} selected={buyOutCheckedBy} onSelectedChange={setBuyOutCheckedBy} />
             <Button onClick={buyOut}>
                 Confirm
             </Button>
