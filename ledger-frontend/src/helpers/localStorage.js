@@ -38,3 +38,19 @@ export function getSavedAdminPassword() {
 export function saveAdminPassword(password) {
     localStorage.setItem("adminPassword", password);
 }
+
+export function saveLoginInfo({ name, email, venmo, zelle }) {
+    localStorage.setItem("name", name);
+    localStorage.setItem("email", email);
+    localStorage.setItem("venmo", venmo);
+    localStorage.setItem("zelle", zelle);
+}
+
+export function getSavedLoginInfo() {
+    return {
+        name: localStorage.getItem("name") || "",
+        email: localStorage.getItem("email") || "",
+        venmo: localStorage.getItem("venmo") || "",
+        zelle: localStorage.getItem("zelle") || "",
+    };
+}

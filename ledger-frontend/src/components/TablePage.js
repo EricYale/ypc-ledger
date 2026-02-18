@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import style from "./stylesheets/TablePage.module.scss";
 import { API_URL, blindsDisplay, displayCents, toCents } from "../helpers/consts";
 import { useParams } from "react-router-dom";
-import { getUID, getToken, getSavedAdminPassword } from "../helpers/localStorage";
+import { getUID, getToken, getSavedAdminPassword, getSavedLoginInfo, saveLoginInfo } from "../helpers/localStorage";
 import Button from "./Button";
 import Input from "./Input";
 import confetti from "canvas-confetti";
@@ -12,12 +12,14 @@ import ChipExamplePhoto from "../resources/chip_example.jpg";
 import Dropdown from "./Dropdown";
 
 const TablePage = () => {
+    const defaultData = getSavedLoginInfo();
+
     const {id} = useParams();
     const [tables, setTables] = React.useState(null);
-    const [name, setName] = React.useState("");
-    const [venmo, setVenmo] = React.useState("");
-    const [zelle, setZelle] = React.useState("");
-    const [email, setEmail] = React.useState("");
+    const [name, setName] = React.useState(defaultData.name);
+    const [venmo, setVenmo] = React.useState(defaultData.venmo);
+    const [zelle, setZelle] = React.useState(defaultData.zelle);
+    const [email, setEmail] = React.useState(defaultData.email);
     const [showBuyOutUI, setShowBuyOutUI] = React.useState(false);
     const [showBuyInUI, setShowBuyInUI] = React.useState(false);
     const [buyOutAmount, setBuyOutAmount] = React.useState(0);
@@ -62,6 +64,7 @@ const TablePage = () => {
             return;
         }
         setError(null);
+        saveLoginInfo({ name, venmo, zelle, email });
         let res;
         try {
             res = await fetch(API_URL + "/api/join_table", {
