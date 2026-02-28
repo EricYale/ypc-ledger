@@ -118,7 +118,7 @@ const CreateTableModal = ({ setError, usedTableNumbers }) => {
 
     const [tableNumber, setTableNumber] = React.useState("");
     const [blinds, setBlinds] = React.useState(".05/.10");
-    const [bankingMode, setBankingMode] = React.useState("banker-prepay");
+    const [bankingMode, setBankingMode] = React.useState("transfer");
     const [bankerVenmo, setBankerVenmo] = React.useState("");
     const [bankerZelle, setBankerZelle] = React.useState("");
     const [loading, setLoading] = React.useState(false);

@@ -426,7 +426,10 @@ const TablePage = () => {
             }
             {
                 !showBuyInUI && !showBuyOutUI && (
-                    <Button onClick={() => setShowBuyOutUI(true)}>
+                    <Button onClick={async () => {
+                        await fetchTables();
+                        setShowBuyOutUI(true);
+                    }}>
                         Buy out
                     </Button>
                 )
