@@ -16,6 +16,7 @@ const sendEmailsRoute = require("./routes/sendEmails");
 const reconcileTableRoute = require("./routes/reconcileTable");
 const updateLeaderboardRoute = require("./routes/updateLeaderboard");
 const getLeaderboardRoute = require("./routes/getLeaderboard");
+const getPlayerEmailsRoute = require("./routes/getPlayerEmails");
 let app;
 
 const chipImagesFolder = path.join(__dirname, "chip_images");
@@ -47,6 +48,7 @@ function initialize() {
     app.post("/api/reconcile_table", reconcileTableRoute);
     app.post("/api/update_leaderboard", updateLeaderboardRoute);
     app.get("/api/get_leaderboard", getLeaderboardRoute);
+    app.post("/api/get_player_emails", getPlayerEmailsRoute);
 
     app.use(express.static("public"));
     app.use("/chip_porn", express.static("chip_images"));
