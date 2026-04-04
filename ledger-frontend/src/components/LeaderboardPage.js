@@ -25,9 +25,11 @@ const LeaderboardPage = () => {
         const sortedUsers = Object.values(json)
             .map(i => ({
                 ...i,
-                totalProfit: i.stats.totalBuyOut - i.stats.totalBuyIn
+                totalProfit: i.stats.totalBuyOut - i.stats.totalBuyIn,
+                bbProfit: i.stats.totalBuyOutBigBlinds - i.stats.totalBuyInBigBlinds,
             }))
-            .sort((a, b) => a.totalProfit - b.totalProfit);
+            // .sort((a, b) => a.totalProfit - b.totalProfit);
+            .sort((a, b) => a.bbProfit - b.bbProfit);
         setUsers(sortedUsers);
     };
 
@@ -68,9 +70,8 @@ const LeaderboardPage = () => {
             creatureWidth = 250;
         }
 
-        const bbProfit = user.stats.totalBuyOutBigBlinds - user.stats.totalBuyInBigBlinds;
         const dailyProfit = user.totalProfit / Math.max(user.stats.daysPlayed, 1);
-        const dailyProfitBB = bbProfit / Math.max(user.stats.daysPlayed, 1);
+        const dailyProfitBB = user.bbProfit / Math.max(user.stats.daysPlayed, 1);
 
         return (
             <div className={`${style.sea_creature} ${className}`} key={i} style={{
@@ -86,7 +87,7 @@ const LeaderboardPage = () => {
                 <div className={style.info_box}>
                     <h3>{user.firstName} "{user.nickname}" {user.lastName}</h3>
                     <p>
-                        ${displayCents(user.totalProfit)} total earnings ({bbProfit.toFixed(2)} BB)
+                        ${displayCents(user.totalProfit)} total earnings ({user.bbProfit.toFixed(2)} BB)
                     </p>
                     <p>
                         ${displayCents(dailyProfit)} per day ({dailyProfitBB.toFixed(2)} BB)
