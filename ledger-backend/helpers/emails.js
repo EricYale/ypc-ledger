@@ -204,7 +204,7 @@ async function sendEmailsForTransfer(table) {
                     <img
                         src="https://yalepokerclub.com/resources/logo_black.png"
                         alt="Yale Poker Club"
-                        style="max-width: 50%; max-height: 20%; margin: 70px 0;"
+                        style="max-width: 50vw; max-height: 20vh; margin: 70px 0;"
                     />
                     <h2>Thanks for playing at ${table.eventName}</h2>
                     <h3 style="margin-bottom: 50px;">Table ${table.tableNumber}</h3>
