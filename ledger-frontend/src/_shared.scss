@@ -19,11 +19,11 @@ $MOBILE_WIDTH: 1000px;
 
 @mixin rails() {
     padding: 50px 30vw;
-    @include mobile(){
-        padding: 50px 2vw;
-    }
     @include small_desktop(){
         padding: 50px 15vw;
+    }
+    @include mobile(){
+        padding: 30px 20px;
     }
 }
 
@@ -33,7 +33,7 @@ body {
     font-family: "Nunito Sans", sans-serif;
     font-size: 20px;
     @include mobile() {
-        font-size: 25px;
+        font-size: 17px;
     }
     margin: 0;
 }

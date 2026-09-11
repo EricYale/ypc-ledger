@@ -6,10 +6,14 @@
     text-align: center;
     height: 2000vh;
     background-image: linear-gradient(#52a8ff, #000047);
+    overflow-x: hidden;
 }
 
 #sky {
     mask: linear-gradient(0,#0000 74px,#000 0), radial-gradient(74px,#000 calc(100% - 1px),#0000) bottom/136.9px 148px;
+    @include shared.mobile {
+        mask: linear-gradient(0,#0000 37px,#000 0), radial-gradient(37px,#000 calc(100% - 1px),#0000) bottom/68.45px 74px;
+    }
     background-image: linear-gradient(#adf8ff, #FFFFFF);
     height: 50vh;
     display: flex;
@@ -20,6 +24,10 @@
         color: #4800ff;
         font-size: 48px;
         font-family: 'Cherry Bomb One', cursive;
+        @include shared.mobile {
+            font-size: 28px;
+            padding: 0 16px;
+        }
     }
 }
 
@@ -53,10 +61,25 @@
         margin: 5px;
         text-transform: uppercase;
         font-size: 16px;
+        @include shared.mobile {
+            font-size: 13px;
+        }
     }
     p {
         margin: 0;
         font-size: 13px;
+        @include shared.mobile {
+            font-size: 11px;
+        }
+    }
+    @include shared.mobile {
+        max-width: 60vw;
+        &.whale img, &.shark img {
+            max-width: 150px;
+        }
+        &.fish img {
+            max-width: 70px;
+        }
     }
 }
 
@@ -80,4 +103,15 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     min-width: 60vw;
     color: #000000;
+    @include shared.mobile {
+        box-sizing: border-box;
+        width: 92vw;
+        min-width: 0;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 16px;
+        h1 {
+            font-size: 22px;
+        }
+    }
 }

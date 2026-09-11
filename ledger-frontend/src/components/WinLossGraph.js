@@ -49,7 +49,7 @@ const WinLossGraph = ({ user }) => {
     if (!data.length) return null;
 
     return (
-        <div className={style.graphContainer} style={{ width: "100%", height: 400 }}>
+        <div className={style.graphContainer}>
              <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" />

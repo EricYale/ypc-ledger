@@ -26,8 +26,8 @@
     transition: background-color 0.3s;
     cursor: pointer;
     @include shared.mobile {
-        padding: 50px;
-        margin-bottom: 50px;
+        padding: 24px;
+        margin-bottom: 24px;
     }
 
     &.no_stakes { 
@@ -60,7 +60,7 @@
             animation: pulse 1s infinite alternate ease-in-out;
         }
         @include shared.mobile {
-            font-size: 30px;
+            font-size: 13px;
         }
     }
 
@@ -68,14 +68,14 @@
         margin: 10px 0px;
         font-size: 20px;
         @include shared.mobile {
-            font-size: 40px;
-            margin: 15px 0px;
+            font-size: 18px;
+            margin: 8px 0px;
         }
     }
     p {
         margin: 0;
         @include shared.mobile {
-            font-size: 20px;
+            font-size: 15px;
         }
     }
 
@@ -84,7 +84,7 @@
         text-transform: uppercase;
         font-size: 15px;
         @include shared.mobile {
-            font-size: 30px;
+            font-size: 13px;
         }
     }
 }

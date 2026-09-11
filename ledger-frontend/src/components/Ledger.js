@@ -28,18 +28,20 @@ const Ledger = ({ table }) => {
     });
 
     return (
-        <table id={style.ledger_table}>
-            <tr>
-                <th>Name</th>
-                <th>Venmo/Zelle</th>
-                <th>Email</th>
-                <th>In</th>
-                <th>Out</th>
-                <th>Net</th>
-                <th>Chips</th>
-            </tr>
-            {ledgerElems}
-        </table>
+        <div id={style.ledger_scroll}>
+            <table id={style.ledger_table}>
+                <tr>
+                    <th>Name</th>
+                    <th>Venmo/Zelle</th>
+                    <th>Email</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>Net</th>
+                    <th>Chips</th>
+                </tr>
+                {ledgerElems}
+            </table>
+        </div>
     );
 };
 

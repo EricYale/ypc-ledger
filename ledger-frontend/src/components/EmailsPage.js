@@ -62,8 +62,8 @@ const EmailsPage = () => {
             }
             <textarea 
                 disabled 
+                className={style.email_list}
                 value={emails.join("\n")} 
-                style={{ width: "100%", height: "500px", padding: "10px", marginTop: "20px", fontSize: "16px", resize: "vertical" }}
             />
         </div>
     );

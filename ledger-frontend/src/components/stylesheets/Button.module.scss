@@ -12,7 +12,8 @@
     font-size: 20px;
     color: shared.$fg-color;
     @include shared.mobile {
-        font-size: 33px;
-        padding: 30px 20px;
+        font-size: 18px;
+        padding: 16px 14px;
+        margin-top: 14px;
     }
 }

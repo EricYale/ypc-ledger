@@ -8,6 +8,9 @@
 
 #tables_container {
     margin-top: 50px;
+    @include shared.mobile {
+        margin-top: 30px;
+    }
 }
 
 #logo {
@@ -15,6 +18,10 @@
     max-width: 100%;
     margin-top: 5vh;
     margin-bottom: 10vh;
+    @include shared.mobile {
+        max-height: 14vh;
+        margin-bottom: 6vh;
+    }
 }
 
 #create_table_button {
@@ -32,9 +39,9 @@
     width: 100%;
     font-size: 80px;
     @include shared.mobile {
-        font-size: 80px;
-        padding: 40px;
-        margin-bottom: 30px;
+        font-size: 40px;
+        padding: 24px;
+        margin-bottom: 24px;
     }
 }
 
@@ -47,6 +54,7 @@
     padding: 40px;
     @include shared.mobile {
         padding: 20px;
+        margin-bottom: 24px;
     }
 }
 

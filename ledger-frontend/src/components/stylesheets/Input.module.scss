@@ -7,11 +7,18 @@
     gap: 10px;
     margin-bottom: 15px;
     align-items: center;
+    @include shared.mobile {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        text-align: left;
+    }
 }
 .label {
     font-size: 20px;
     @include shared.mobile {
-        font-size: 37px;
+        font-size: 17px;
+        margin: 0;
     }
 }
 .input {
@@ -25,8 +32,9 @@
     font-size: 20px;
     width: 25%;
     @include shared.mobile {
-        font-size: 37px;
-        padding-bottom: 20px;
+        font-size: 17px;
+        width: 100%;
+        padding: 10px 0;
     }
 
     &:focus {
@@ -35,13 +43,13 @@
     &.large {
         width: 60%;
         @include shared.mobile {
-            width: 50%;
+            width: 100%;
         }
     }
     &.file {
         font-size: 12px;
         @include shared.mobile {
-            font-size: 10px;
+            font-size: 15px;
         }
     }
 }
