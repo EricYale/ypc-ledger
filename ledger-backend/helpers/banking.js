@@ -3,6 +3,16 @@ function displayCents(cents) {
     return (cents / 100).toFixed(2);
 }
 
+function isBuyIn(transaction) {
+    if(transaction.adjusts) return transaction.adjusts === "in";
+    return transaction.amount > 0;
+}
+
+function isBuyOut(transaction) {
+    if(transaction.adjusts) return transaction.adjusts === "out";
+    return transaction.amount < 0;
+}
+
 function getPlayerNets(table, skipReconciliation = false) {
     const nets = {};
     const ins = {};
@@ -17,13 +27,13 @@ function getPlayerNets(table, skipReconciliation = false) {
         // Ins are ALWAYS POSITIVE
         ins[playerId] = table.transactions
             .filter(i => i.player === playerId)
-            .filter(i => i.amount > 0)
+            .filter(isBuyIn)
             .filter(i => !skipReconciliation || !i.reconciliation)
             .reduce((acc, curr) => acc + curr.amount, 0);
         // Outs are ALWAYS POSITIVE
         outs[playerId] = -1 * table.transactions
             .filter(i => i.player === playerId)
-            .filter(i => i.amount < 0)
+            .filter(isBuyOut)
             .filter(i => !skipReconciliation || !i.reconciliation)
             .reduce((acc, curr) => acc + curr.amount, 0);
     }
@@ -84,4 +94,6 @@ module.exports = {
     displayCents,
     getPlayerNets,
     getDirectTransferTransactions,
+    isBuyIn,
+    isBuyOut,
 };

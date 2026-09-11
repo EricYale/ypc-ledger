@@ -192,7 +192,7 @@ const AdminPage = () => {
                         )
                     }
                 </span>
-                <Ledger table={table} />
+                <Ledger table={table} admin onUpdate={fetchTables} />
             </div>
             <a id={style.mailto} href={"mailto:" + mailtoAllAddresses} target="_blank" rel="noreferrer">
                 Email all players

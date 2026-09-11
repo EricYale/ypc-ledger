@@ -1,0 +1,253 @@
+@use "../../shared";
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: center;
+}
+
+.action {
+    background-color: lighten(shared.$bg-color, 10%);
+    border: none;
+    border-radius: 8px;
+    color: shared.$fg-color;
+    font-size: 16px;
+    line-height: 1;
+    padding: 9px 11px;
+    cursor: pointer;
+    &:hover {
+        background-color: lighten(shared.$bg-color, 20%);
+    }
+    @include shared.mobile {
+        font-size: 14px;
+        padding: 8px 9px;
+    }
+}
+
+.explainer {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    color: lighten(shared.$bg-color, 70%);
+    @include shared.mobile {
+        font-size: 14px;
+    }
+}
+
+.field {
+    display: block;
+    margin-bottom: 18px;
+}
+
+.field_label {
+    display: block;
+    font-size: 17px;
+    margin-bottom: 7px;
+    @include shared.mobile {
+        font-size: 15px;
+    }
+}
+
+.money_input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: lighten(shared.$bg-color, 10%);
+    border-radius: 10px;
+    padding: 0 18px;
+    &:focus-within {
+        background-color: lighten(shared.$bg-color, 18%);
+    }
+
+    & input {
+        font-family: "Nunito Sans", sans-serif;
+        background: none;
+        border: none;
+        color: shared.$fg-color;
+        font-size: 32px;
+        padding: 18px 0;
+        width: 100%;
+        min-width: 0;
+        &:focus {
+            outline: none;
+        }
+        &::-webkit-outer-spin-button, &::-webkit-inner-spin-button {
+            appearance: none;
+            margin: 0;
+        }
+        @include shared.mobile {
+            font-size: 26px;
+            padding: 14px 0;
+        }
+    }
+}
+
+.currency {
+    font-size: 32px;
+    margin-right: 6px;
+    color: lighten(shared.$bg-color, 55%);
+    @include shared.mobile {
+        font-size: 26px;
+    }
+}
+
+.select {
+    font-family: "Nunito Sans", sans-serif;
+    background-color: lighten(shared.$bg-color, 10%);
+    border: none;
+    border-radius: 10px;
+    color: shared.$fg-color;
+    font-size: 18px;
+    padding: 18px 15px;
+    width: 100%;
+    box-sizing: border-box;
+    &:focus {
+        outline: none;
+        background-color: lighten(shared.$bg-color, 18%);
+    }
+    @include shared.mobile {
+        font-size: 15px;
+        padding: 14px 12px;
+    }
+}
+
+.net {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    border-top: 1px shared.$fg-color solid;
+    padding-top: 18px;
+    font-size: 32px;
+    @include shared.mobile {
+        font-size: 26px;
+    }
+}
+
+.summary {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-bottom: 20px;
+    font-size: 17px;
+    @include shared.mobile {
+        font-size: 15px;
+    }
+}
+
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 4px 12px;
+    background-color: lighten(shared.$bg-color, 10%);
+    border-radius: 10px;
+    padding: 15px 18px;
+    @include shared.mobile {
+        padding: 12px 14px;
+    }
+}
+
+.card_main {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 22px;
+    @include shared.mobile {
+        font-size: 18px;
+    }
+}
+
+.card_type {
+    font-size: 15px;
+    color: lighten(shared.$bg-color, 70%);
+    @include shared.mobile {
+        font-size: 13px;
+    }
+}
+
+.card_meta {
+    grid-column: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: lighten(shared.$bg-color, 55%);
+    @include shared.mobile {
+        font-size: 12px;
+    }
+}
+
+.card_delete {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    background: none;
+    border: none;
+    color: lighten(shared.$bg-color, 55%);
+    font-size: 16px;
+    padding: 8px 10px;
+    cursor: pointer;
+    &:hover {
+        color: #FF0000;
+    }
+}
+
+.confirm {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    @include shared.mobile {
+        grid-column: 1 / span 2;
+        grid-row: auto;
+        margin-top: 8px;
+    }
+}
+
+.confirm_yes, .confirm_no {
+    font-family: "Nunito Sans", sans-serif;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 13px;
+    font-size: 14px;
+    cursor: pointer;
+    @include shared.mobile {
+        flex: 1;
+    }
+}
+.confirm_yes {
+    background-color: #FF0000;
+    color: shared.$fg-color;
+}
+.confirm_no {
+    background-color: lighten(shared.$bg-color, 25%);
+    color: shared.$fg-color;
+}
+
+.link {
+    color: #5555FF;
+}
+
+.error {
+    color: red;
+    font-size: 16px;
+}
+
+.lost {
+    color: #FF0000;
+}
+.won {
+    color: #00FF00;
+}

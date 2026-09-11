@@ -1,10 +1,9 @@
 @use "../../shared";
 
 #ledger_scroll {
-    @include shared.mobile {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 #ledger_table {
@@ -18,7 +17,7 @@
     @include shared.mobile {
         font-size: 13px;
         margin-top: 24px;
-        min-width: 640px;
+        min-width: 760px;
         &, & th, & td {
             padding: 5px;
         }

@@ -25,6 +25,16 @@ export function blindsDisplay({smallBlind, bigBlind}) {
     return `$${displayCents(smallBlind)}/$${displayCents(bigBlind)}`;
 };
 
+export function isBuyIn(transaction) {
+    if(transaction.adjusts) return transaction.adjusts === "in";
+    return transaction.amount > 0;
+}
+
+export function isBuyOut(transaction) {
+    if(transaction.adjusts) return transaction.adjusts === "out";
+    return transaction.amount < 0;
+}
+
 export function createLedgerObject(table) {
     return Object.keys(table.players)
         .map(playerId => {
@@ -36,11 +46,11 @@ export function createLedgerObject(table) {
                     .reduce((acc, curr) => acc + curr.amount, 0),
                 in: table.transactions
                     .filter(i => i.player === playerId)
-                    .filter(i => i.amount > 0)
+                    .filter(isBuyIn)
                     .reduce((acc, curr) => acc + curr.amount, 0),
                 out: table.transactions
                     .filter(i => i.player === playerId)
-                    .filter(i => i.amount < 0)
+                    .filter(isBuyOut)
                     .reduce((acc, curr) => acc + curr.amount, 0),
             }
         })
