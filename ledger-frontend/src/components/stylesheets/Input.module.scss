@@ -23,22 +23,27 @@
 }
 .input {
     font-family: "Nunito Sans", sans-serif;
-    background: transparent;
+    background-color: lighten(shared.$bg-color, 10%);
     border: none;
-    border-bottom: 5px dotted shared.$fg-color;
+    border-radius: 10px;
     color: shared.$fg-color;
-    padding: 20px 0;
+    padding: 20px 15px;
+    box-sizing: border-box;
     display: inline;
     font-size: 20px;
     width: 25%;
     @include shared.mobile {
         font-size: 17px;
         width: 100%;
-        padding: 10px 0;
+        padding: 14px 12px;
     }
 
+    &::placeholder {
+        color: lighten(shared.$bg-color, 45%);
+    }
     &:focus {
         outline: none;
+        background-color: lighten(shared.$bg-color, 18%);
     }
     &.large {
         width: 60%;

@@ -4,7 +4,7 @@
 #leaderboard_page {
     color: shared.$fg-color;
     text-align: center;
-    height: 2000vh;
+    min-height: 100vh;
     background-image: linear-gradient(#52a8ff, #000047);
     overflow-x: hidden;
 }
@@ -17,10 +17,13 @@
     background-image: linear-gradient(#adf8ff, #FFFFFF);
     height: 50vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 25px;
 
     h1 {
+        margin: 0;
         color: #4800ff;
         font-size: 48px;
         font-family: 'Cherry Bomb One', cursive;
@@ -31,9 +34,47 @@
     }
 }
 
+#sort_control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #4800ff;
+    font-family: 'Cherry Bomb One', cursive;
+    font-size: 20px;
+    @include shared.mobile {
+        gap: 8px;
+        font-size: 15px;
+    }
+}
+
+#sort_select {
+    appearance: none;
+    font-family: 'Cherry Bomb One', cursive;
+    font-size: 20px;
+    color: #4800ff;
+    background-color: #ffffff;
+    border: 3px solid #4800ff;
+    border-radius: 50px;
+    padding: 10px 46px 10px 20px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234800ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    background-size: 14px;
+    @include shared.mobile {
+        font-size: 15px;
+        padding: 8px 34px 8px 14px;
+        background-position: right 13px center;
+        background-size: 11px;
+    }
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(72, 0, 255, 0.25);
+    }
+}
+
 #ocean {
     position: relative;
-    height: 1950vh;
 }
 
 @keyframes bob {
@@ -44,18 +85,27 @@
 .sea_creature {
     position: absolute;
     cursor: pointer;
+    --creature-width: 250px;
+    @include shared.mobile {
+        --creature-width: 170px;
+    }
+    width: var(--creature-width);
+    left: calc(var(--x-fraction, 0.5) * (100% - var(--creature-width)));
     img {
         animation: bob var(--bob-period, 2s) infinite alternate ease-in-out;
         animation-delay: var(--bob-delay, 0s);
+        max-width: 100%;
     }
-    &.whale img {
-        max-width: 250px;
+    &.whale img, &.shark img {
+        @include shared.mobile {
+            max-width: 150px;
+        }
     }
     &.fish img {
         max-width: 100px;
-    }
-    &.shark img {
-        max-width: 250px;
+        @include shared.mobile {
+            max-width: 70px;
+        }
     }
     h3 {
         margin: 5px;
@@ -70,15 +120,6 @@
         font-size: 13px;
         @include shared.mobile {
             font-size: 11px;
-        }
-    }
-    @include shared.mobile {
-        max-width: 60vw;
-        &.whale img, &.shark img {
-            max-width: 150px;
-        }
-        &.fish img {
-            max-width: 70px;
         }
     }
 }
