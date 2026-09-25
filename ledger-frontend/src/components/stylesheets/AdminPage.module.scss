@@ -65,3 +65,18 @@
         height: 50vh;
     }
 }
+
+#add_player {
+    font-family: "Nunito Sans", sans-serif;
+    background-color: lighten(shared.$bg-color, 10%);
+    border: none;
+    border-radius: 8px;
+    color: shared.$fg-color;
+    font-size: 16px;
+    padding: 10px 18px;
+    margin-top: 20px;
+    cursor: pointer;
+    &:hover {
+        background-color: lighten(shared.$bg-color, 20%);
+    }
+}

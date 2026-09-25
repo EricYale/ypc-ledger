@@ -10,6 +10,7 @@ import ChipDenoms from "./ChipDenoms";
 import Ledger from "./Ledger";
 import ChipExamplePhoto from "../resources/chip_example.jpg";
 import Dropdown from "./Dropdown";
+import JoinTableFields, { validateJoinFields } from "./JoinTableFields";
 
 const TablePage = () => {
     const defaultData = getSavedLoginInfo();
@@ -50,15 +51,11 @@ const TablePage = () => {
     };
 
     const addUserToTable = async () => {
-        if(!name || !email) {
-            setError("Please enter name and email");
+        const fieldsError = validateJoinFields({ name, email, venmo, zelle });
+        if(fieldsError) {
+            setError(fieldsError);
             return;
         }
-        if(!venmo && !zelle) {
-            setError("Please enter your Venmo and/or Zelle");
-            return;
-        }
-        console.log(buyInAmount);
         if(!buyInAmount) {
             setError("Please enter a buy-in amount");
             return;
@@ -281,40 +278,13 @@ const TablePage = () => {
             <div id={style.table_page}>
                 <h1>Welcome to the table!</h1>
                 <p>Integrity and fair play keep YPC fun. By joining this table, you agree to follow all standard rules and report buy ins/outs honestly.</p>
-                <Input
-                    largeInput
-                    label="Name"
-                    placeholder="Phil Hellmuth"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                />
-                <Input
-                    largeInput
-                    label="Yale email"
-                    placeholder="phil.hellmuth@yale.edu"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                />
-                <Input
-                    largeInput
-                    label="Venmo"
-                    placeholder="@philhellmuth"
-                    value={venmo}
-                    onChange={e => setVenmo(e.target.value)}
-                />
-                <Input
-                    largeInput
-                    label="Zelle"
-                    placeholder="1-800-PRE-FLOP"
-                    value={zelle}
-                    onChange={e => setZelle(e.target.value)}
-                />
-                <Input
-                    largeInput
-                    label="Buy-in ($)"
-                    placeholder={displayCents(table.bigBlind * 100)}
-                    value={buyInAmount}
-                    onChange={e => setBuyInAmount(e.target.value)}
+                <JoinTableFields
+                    table={table}
+                    name={name} setName={setName}
+                    email={email} setEmail={setEmail}
+                    venmo={venmo} setVenmo={setVenmo}
+                    zelle={zelle} setZelle={setZelle}
+                    buyInAmount={buyInAmount} setBuyInAmount={setBuyInAmount}
                 />
                 <Button onClick={addUserToTable}>
                     Let's play!

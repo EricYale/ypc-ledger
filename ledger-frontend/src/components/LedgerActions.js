@@ -8,7 +8,7 @@ import style from "./stylesheets/LedgerActions.module.scss";
 import { API_URL, displayCents, isBuyIn, toCents } from "../helpers/consts";
 import { getSavedAdminPassword } from "../helpers/localStorage";
 
-const postAdminAction = async (path, body) => {
+export const postAdminAction = async (path, body) => {
     let res;
     try {
         res = await fetch(API_URL + path, {
@@ -35,6 +35,7 @@ const EditModal = ({ table, player, onClose, onUpdate }) => {
     const [amountOut, setAmountOut] = React.useState(displayCents(-player.out));
     const [error, setError] = React.useState(null);
     const [saving, setSaving] = React.useState(false);
+    const [confirmingRemove, setConfirmingRemove] = React.useState(false);
 
     const inCents = toCents(parseFloat(amountIn));
     const outCents = toCents(parseFloat(amountOut));
@@ -57,6 +58,24 @@ const EditModal = ({ table, player, onClose, onUpdate }) => {
             });
         } catch(e) {
             setError(`Could not save: ${e.message}`);
+            setSaving(false);
+            return;
+        }
+        await onUpdate();
+        onClose();
+    };
+
+    const remove = async () => {
+        if(saving) return;
+        setError(null);
+        setSaving(true);
+        try {
+            await postAdminAction("/api/remove_player", {
+                tableId: table.id,
+                playerId: player.id,
+            });
+        } catch(e) {
+            setError(`Could not remove: ${e.message}`);
             setSaving(false);
             return;
         }
@@ -100,6 +119,25 @@ const EditModal = ({ table, player, onClose, onUpdate }) => {
             <Button onClick={save}>
                 {saving ? "Saving..." : "Save"}
             </Button>
+            {
+                confirmingRemove ? (
+                    <div className={style.remove_confirm}>
+                        <span>Remove {player.name} and all their transactions?</span>
+                        <div className={style.confirm}>
+                            <button className={style.confirm_yes} onClick={remove}>
+                                {saving ? "Removing..." : "Remove"}
+                            </button>
+                            <button className={style.confirm_no} onClick={() => setConfirmingRemove(false)}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <button className={style.remove_player} onClick={() => setConfirmingRemove(true)}>
+                        🗑️ Remove user from table
+                    </button>
+                )
+            }
         </Modal>
     );
 };

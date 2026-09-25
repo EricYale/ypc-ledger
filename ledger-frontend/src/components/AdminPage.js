@@ -7,11 +7,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { getSavedAdminPassword } from "../helpers/localStorage";
 import Ledger from "./Ledger";
+import AddPlayerModal from "./AddPlayerModal";
 
 const AdminPage = () => {
     const {id} = useParams();
     const [tables, setTables] = React.useState(null);
     const [error, setError] = React.useState("");
+    const [showAddPlayer, setShowAddPlayer] = React.useState(false);
+    const closeAddPlayer = React.useCallback(() => setShowAddPlayer(false), []);
     const password = getSavedAdminPassword();
 
     const fetchTables = async () => {
@@ -193,6 +196,13 @@ const AdminPage = () => {
                     }
                 </span>
                 <Ledger table={table} admin onUpdate={fetchTables} />
+                <button id={style.add_player} onClick={() => setShowAddPlayer(true)}>
+                    + Add user
+                </button>
+                {
+                    showAddPlayer &&
+                        <AddPlayerModal table={table} onClose={closeAddPlayer} onUpdate={fetchTables} />
+                }
             </div>
             <a id={style.mailto} href={"mailto:" + mailtoAllAddresses} target="_blank" rel="noreferrer">
                 Email all players

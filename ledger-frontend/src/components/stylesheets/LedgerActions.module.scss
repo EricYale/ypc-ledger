@@ -251,3 +251,26 @@
 .won {
     color: #00FF00;
 }
+
+.remove_player {
+    display: block;
+    margin: 20px auto 0 auto;
+    background: none;
+    border: none;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 14px;
+    color: lighten(shared.$bg-color, 55%);
+    cursor: pointer;
+    &:hover {
+        color: #FF0000;
+    }
+}
+
+.remove_confirm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    font-size: 15px;
+}
