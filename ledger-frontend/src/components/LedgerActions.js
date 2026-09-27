@@ -1,9 +1,11 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCodeMerge, faEye, faImage, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronRight, faCodeMerge, faEye, faImage, faPencil, faTrash } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import Modal from "./Modal";
 import Button from "./Button";
+import Input from "./Input";
+import { validateJoinFields } from "./JoinTableFields";
 import style from "./stylesheets/LedgerActions.module.scss";
 import { API_URL, displayCents, isBuyIn, toCents } from "../helpers/consts";
 import { getSavedAdminPassword } from "../helpers/localStorage";
@@ -36,10 +38,17 @@ const EditModal = ({ table, player, onClose, onUpdate }) => {
     const [error, setError] = React.useState(null);
     const [saving, setSaving] = React.useState(false);
     const [confirmingRemove, setConfirmingRemove] = React.useState(false);
+    const [infoOpen, setInfoOpen] = React.useState(false);
+    const [name, setName] = React.useState(player.name || "");
+    const [email, setEmail] = React.useState(player.email || "");
+    const [venmo, setVenmo] = React.useState(player.venmo || "");
+    const [zelle, setZelle] = React.useState(player.zelle || "");
 
     const inCents = toCents(parseFloat(amountIn));
     const outCents = toCents(parseFloat(amountOut));
     const valid = !isNaN(inCents) && !isNaN(outCents);
+    const infoChanged = name !== (player.name || "") || email !== (player.email || "")
+        || venmo !== (player.venmo || "") || zelle !== (player.zelle || "");
 
     const save = async () => {
         if(saving) return;
@@ -47,9 +56,25 @@ const EditModal = ({ table, player, onClose, onUpdate }) => {
             setError("Please enter valid amounts");
             return;
         }
+        const infoError = infoChanged && validateJoinFields({ name, email, venmo, zelle });
+        if(infoError) {
+            setInfoOpen(true);
+            setError(infoError);
+            return;
+        }
         setError(null);
         setSaving(true);
         try {
+            if(infoChanged) {
+                await postAdminAction("/api/admin_edit_player_info", {
+                    tableId: table.id,
+                    playerId: player.id,
+                    name,
+                    email,
+                    venmo,
+                    zelle,
+                });
+            }
             await postAdminAction("/api/admin_adjust_player", {
                 tableId: table.id,
                 playerId: player.id,
@@ -115,6 +140,20 @@ const EditModal = ({ table, player, onClose, onUpdate }) => {
                     {valid ? `$${displayCents(outCents - inCents)}` : "—"}
                 </span>
             </div>
+            <button className={style.info_toggle} onClick={() => setInfoOpen(!infoOpen)} aria-expanded={infoOpen}>
+                <FontAwesomeIcon icon={infoOpen ? faChevronDown : faChevronRight} />
+                Player info
+            </button>
+            {
+                infoOpen && (
+                    <div className={style.info_section}>
+                        <Input label="Name" value={name} onChange={e => setName(e.target.value)} />
+                        <Input label="Email" value={email} onChange={e => setEmail(e.target.value)} />
+                        <Input label="Venmo" value={venmo} onChange={e => setVenmo(e.target.value)} />
+                        <Input label="Zelle" value={zelle} onChange={e => setZelle(e.target.value)} />
+                    </div>
+                )
+            }
             {error && <p className={style.error}>{error}</p>}
             <Button onClick={save}>
                 {saving ? "Saving..." : "Save"}

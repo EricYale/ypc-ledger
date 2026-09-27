@@ -101,7 +101,7 @@ async function sendEmailsForPrebank(table) {
             <html>
                 <body style="text-align: center; font-family: 'Lato', sans-serif;">
                     <img
-                        src="https://yalepokerclub.com/resources/logo_black.png"
+                        src="https://storage.googleapis.com/ypc-static/logo_black.png"
                         alt="Yale Poker Club"
                         style="max-width: 50%; max-height: 20%; margin: 70px 0;"
                     />
@@ -156,6 +156,32 @@ function getPaymentMethod(player, mode) {
     return "[no payment app]";
 }
 
+function venmoHandle(player) {
+    return (player.venmo || "").trim().replace(/^@/, "");
+}
+
+function venmoPayButton(sender, recipient, amountCents) {
+    const recipientHandle = venmoHandle(recipient);
+    if(!venmoHandle(sender) || !recipientHandle) return "";
+
+    const url = `https://venmo.com/${encodeURIComponent(recipientHandle)}?txn=pay&amount=${(amountCents / 100).toFixed(2)}`;
+
+    return `
+        <a
+            href="${url}"
+            style="display: inline-block; margin-left: 8px; padding: 4px 12px; background-color: #008CFF; color: #FFFFFF; border-radius: 6px; text-decoration: none; font-weight: bold; vertical-align: middle;"
+        >
+            <img
+                src="https://storage.googleapis.com/ypc-static/venmo-icon-white.png"
+                alt=""
+                width="14"
+                height="14"
+                style="vertical-align: middle; margin-right: 4px; border: 0;"
+            /><span style="vertical-align: middle; color: #FFFFFF;">Pay</span>
+        </a>
+    `;
+}
+
 async function sendEmailsForTransfer(table) {
     const {nets, ins, outs} = getPlayerNets(table);
     const transactions = getDirectTransferTransactions(table);
@@ -186,9 +212,10 @@ async function sendEmailsForTransfer(table) {
         let transfers = "";
         transactions.filter(i => i.sender === playerId).forEach(i => {
             const recipient = table.players[i.recipient];
-            paymentApp = getPaymentMethod(recipient, i.method);
+            const paymentApp = getPaymentMethod(recipient, i.method);
+            const payButton = i.method === "zelle" ? "" : venmoPayButton(player, recipient, i.amount);
 
-            transfers += `<li>Please send <b>$${displayCents(i.amount)}</b> to <b>${recipient.name}</b>: <b>${paymentApp}</b>.</li>`;
+            transfers += `<li style="margin-bottom: 8px;">Please send <b>$${displayCents(i.amount)}</b> to <b>${recipient.name}</b>: <b>${paymentApp}</b>.${payButton}</li>`;
         });
         transactions.filter(i => i.recipient === playerId).forEach(i => {
             const sender = table.players[i.sender];
@@ -202,7 +229,7 @@ async function sendEmailsForTransfer(table) {
             <html>
                 <body style="text-align: center; font-family: 'Lato', sans-serif;">
                     <img
-                        src="https://yalepokerclub.com/resources/logo_black.png"
+                        src="https://storage.googleapis.com/ypc-static/logo_black.png"
                         alt="Yale Poker Club"
                         style="max-width: 50vw; max-height: 20vh; margin: 70px 0;"
                     />

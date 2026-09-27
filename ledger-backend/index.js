@@ -22,6 +22,7 @@ const mergePlayersRoute = require("./routes/mergePlayers");
 const deleteTransactionRoute = require("./routes/deleteTransaction");
 const removePlayerRoute = require("./routes/removePlayer");
 const adminAddPlayerRoute = require("./routes/adminAddPlayer");
+const adminEditPlayerInfoRoute = require("./routes/adminEditPlayerInfo");
 let app;
 
 const chipImagesFolder = path.join(__dirname, "chip_images");
@@ -59,6 +60,7 @@ function initialize() {
     app.post("/api/delete_transaction", deleteTransactionRoute);
     app.post("/api/remove_player", removePlayerRoute);
     app.post("/api/admin_add_player", adminAddPlayerRoute);
+    app.post("/api/admin_edit_player_info", adminEditPlayerInfoRoute);
 
     app.use(express.static("public"));
     app.use("/chip_porn", express.static("chip_images"));

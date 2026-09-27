@@ -9,6 +9,34 @@ import { getSavedAdminPassword } from "../helpers/localStorage";
 import Ledger from "./Ledger";
 import AddPlayerModal from "./AddPlayerModal";
 
+const EXTRA_MONEY_EMAIL_TEMPLATE = {
+    subject: ({ tableNumber }) => `[YPC] Table ${tableNumber} Ledger`,
+    body: ({ tableNumber, tableDayOfWeek, deadline }) => `Dear Yale Poker Club members,
+
+Thank you for playing at Table ${tableNumber} on ${tableDayOfWeek}.
+
+Our ledger has extra money that is not accounted for. Please carefully check your in/out/net in the screenshot below. If there are any inaccuracies, please reply to this email. Deadline: ${deadline}, noon.
+
+Thanks,
+YPC leadership`,
+};
+
+const MISSING_MONEY_EMAIL_TEMPLATE = {
+    subject: ({ tableNumber }) => `[YPC] Action required: Table ${tableNumber} Ledger`,
+    body: ({ tableNumber, tableDayOfWeek, discrepancy, deadline }) => `Dear Yale Poker Club members,
+
+Thank you for playing at Table ${tableNumber} on ${tableDayOfWeek}.
+
+Our ledger is missing $${discrepancy}. Please carefully check your in/out/net in the screenshot below, and reply either CONFIRMing your info, or with any CORRECTIONS that should be made.
+
+Discrepancy will be split amongst any players who do not respond by ${deadline}, noon.
+
+Thanks,
+YPC Leadership`,
+};
+
+const EMAIL_DEADLINE_DAYS_FROM_NOW = 2;
+
 const AdminPage = () => {
     const {id} = useParams();
     const [tables, setTables] = React.useState(null);
@@ -169,6 +197,21 @@ const AdminPage = () => {
     const ledgerSum = ledger.reduce((acc, curr) => acc + curr.amount, 0);
     const ledgerSumsToZero = ledgerSum === 0;
     const mailtoAllAddresses = Object.values(table.players).map(p => p.email).join(",");
+    let mailtoHref = "mailto:" + mailtoAllAddresses;
+    if(!ledgerSumsToZero) {
+        const template = ledgerSum > 0 ? EXTRA_MONEY_EMAIL_TEMPLATE : MISSING_MONEY_EMAIL_TEMPLATE;
+        const deadlineDate = new Date();
+        deadlineDate.setDate(deadlineDate.getDate() + EMAIL_DEADLINE_DAYS_FROM_NOW);
+        const fields = {
+            tableNumber: table.tableNumber,
+            tableDayOfWeek: new Date(table.createdAt).toLocaleDateString("en-US", { weekday: "long" }),
+            discrepancy: displayCents(Math.abs(ledgerSum)),
+            deadline: deadlineDate.toLocaleDateString("en-US", { weekday: "long", month: "numeric", day: "numeric" }),
+        };
+        const subject = encodeURIComponent(template.subject(fields));
+        const body = encodeURIComponent(template.body(fields));
+        mailtoHref += `?subject=${subject}&body=${body}`;
+    }
 
     return (
         <div id={style.admin_page}>
@@ -204,7 +247,7 @@ const AdminPage = () => {
                         <AddPlayerModal table={table} onClose={closeAddPlayer} onUpdate={fetchTables} />
                 }
             </div>
-            <a id={style.mailto} href={"mailto:" + mailtoAllAddresses} target="_blank" rel="noreferrer">
+            <a id={style.mailto} href={mailtoHref} target="_blank" rel="noreferrer">
                 Email all players
             </a>
             {

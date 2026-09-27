@@ -274,3 +274,30 @@
     margin-top: 20px;
     font-size: 15px;
 }
+
+.info_toggle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 18px 0;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: "Nunito Sans", sans-serif;
+    font-size: 17px;
+    color: shared.$fg-color;
+    cursor: pointer;
+    & svg {
+        font-size: 13px;
+        width: 13px;
+    }
+    @include shared.mobile {
+        font-size: 15px;
+    }
+}
+
+.info_section {
+    margin-bottom: 18px;
+}
