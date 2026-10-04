@@ -1,8 +1,34 @@
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { API_URL, createLedgerObject, displayCents } from "../helpers/consts";
 import style from "./stylesheets/Ledger.module.scss";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
-import LedgerActions from "./LedgerActions";
+import { faCircleCheck, faImage } from "@fortawesome/free-solid-svg-icons";
+import LedgerActions, { postAdminAction } from "./LedgerActions";
+
+const CheckToggle = ({ table, player, onUpdate }) => {
+    const [checked, setChecked] = React.useState(!!player.checked);
+
+    React.useEffect(() => setChecked(!!player.checked), [player.checked]);
+
+    const toggle = async () => {
+        const next = !checked;
+        setChecked(next);
+        try {
+            await postAdminAction("/api/admin_set_player_checked", { tableId: table.id, playerId: player.id, checked: next });
+        } catch(e) {
+            setChecked(!next);
+            alert(e.message);
+            return;
+        }
+        onUpdate();
+    };
+
+    return (
+        <button className={`${style.check} ${checked ? style.checked : ""}`} onClick={toggle}>
+            <FontAwesomeIcon icon={faCircleCheck} />
+        </button>
+    );
+};
 
 const Ledger = ({ table, admin, onUpdate }) => {
     const ledger = createLedgerObject(table);
@@ -17,6 +43,7 @@ const Ledger = ({ table, admin, onUpdate }) => {
             ))
         return (
             <tr key={player.id}>
+                {admin && <td><CheckToggle table={table} player={player} onUpdate={onUpdate} /></td>}
                 <td>{player.name}</td>
                 <td>{player.venmo} {player.zelle}</td>
                 <td className={player.email.toLowerCase().includes("@yale.edu") ? "" : style.email_warning}>{player.email}</td>
@@ -39,6 +66,7 @@ const Ledger = ({ table, admin, onUpdate }) => {
         <div id={style.ledger_scroll}>
             <table id={style.ledger_table}>
                 <tr>
+                    {admin && <th />}
                     <th>Name</th>
                     <th>Venmo/Zelle</th>
                     <th>Email</th>

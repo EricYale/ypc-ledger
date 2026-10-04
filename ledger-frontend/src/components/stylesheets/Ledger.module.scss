@@ -38,3 +38,17 @@
 .email_warning {
     color: #ffd900;
 }
+
+.check {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 18px;
+    color: shared.$fg-color;
+    opacity: 0.25;
+    &.checked {
+        color: #00FF00;
+        opacity: 1;
+    }
+}
