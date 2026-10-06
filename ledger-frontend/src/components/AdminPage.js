@@ -8,6 +8,7 @@ import { faCircleCheck, faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 import { getSavedAdminPassword } from "../helpers/localStorage";
 import Ledger from "./Ledger";
 import AddPlayerModal from "./AddPlayerModal";
+import Modal from "./Modal";
 
 const EXTRA_MONEY_EMAIL_TEMPLATE = {
     subject: ({ tableNumber }) => `[YPC] Table ${tableNumber} Ledger`,
@@ -43,6 +44,8 @@ const AdminPage = () => {
     const [error, setError] = React.useState("");
     const [showAddPlayer, setShowAddPlayer] = React.useState(false);
     const closeAddPlayer = React.useCallback(() => setShowAddPlayer(false), []);
+    const [showReconcileChoice, setShowReconcileChoice] = React.useState(false);
+    const closeReconcileChoice = React.useCallback(() => setShowReconcileChoice(false), []);
     const password = getSavedAdminPassword();
 
     const fetchTables = async () => {
@@ -136,7 +139,18 @@ const AdminPage = () => {
         await fetchTables();
     }
 
-    const reconcileTable = async () => {
+    const onReconcileClick = () => {
+        const players = Object.values(table.players);
+        const hasMissingMoney = createLedgerObject(table).reduce((acc, curr) => acc + curr.amount, 0) < 0;
+        if(hasMissingMoney && players.some(p => p.checked) && players.some(p => !p.checked)) {
+            setShowReconcileChoice(true);
+        } else {
+            reconcileTable(false);
+        }
+    }
+
+    const reconcileTable = async (uncheckedOnly) => {
+        setShowReconcileChoice(false);
         setTables(null);
         let res;
         try {
@@ -148,6 +162,7 @@ const AdminPage = () => {
                 body: JSON.stringify({
                     tableId: id,
                     adminPassword: password,
+                    uncheckedOnly,
                 }),
             });
         } catch(e) {
@@ -268,9 +283,21 @@ const AdminPage = () => {
             }
             {
                 !ledgerSumsToZero && (
-                    <Button onClick={reconcileTable}>
+                    <Button onClick={onReconcileClick}>
                         Reconcile ledger
                     </Button>
+                )
+            }
+            {
+                showReconcileChoice && (
+                    <Modal title="Reconcile ledger" onClose={closeReconcileChoice}>
+                        <p>Split the missing ${displayCents(-ledgerSum)} among which players?</p>
+                        <div className={style.reconcile_choices}>
+                            <Button onClick={() => reconcileTable(true)}>Unchecked players only</Button>
+                            <Button onClick={() => reconcileTable(false)}>All players</Button>
+                            <Button onClick={closeReconcileChoice}>Cancel</Button>
+                        </div>
+                    </Modal>
                 )
             }
             {

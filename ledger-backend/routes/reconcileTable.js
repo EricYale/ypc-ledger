@@ -3,7 +3,7 @@ const { getPlayerNets } = require("../helpers/banking");
 const { getTables, tables, saveTable } = require("../helpers/localStorage");
 
 async function reconcileTableRoute(req, res, next) {
-    const {adminPassword, tableId} = req.body;
+    const {adminPassword, tableId, uncheckedOnly} = req.body;
     if(!tableId) return res.status(400).send("Table ID is required");
     if(!verifyAdmin(adminPassword)) return res.status(403).send("Wrong admin password!");
 
@@ -31,13 +31,19 @@ async function reconcileTableRoute(req, res, next) {
         return;
     }
     if(fanumTaxTotal > 0) {
-        if(reconciliationEligiblePlayers.length === 0) {
-            res.status(500).send("Need at least one non-bankrupt player to reconcile");
+        const taxedPlayers = uncheckedOnly
+            ? reconciliationEligiblePlayers.filter(id => !table.players[id].checked)
+            : reconciliationEligiblePlayers;
+        if(taxedPlayers.length === 0) {
+            res.status(500).send(uncheckedOnly
+                ? "Need at least one non-bankrupt unchecked player to reconcile"
+                : "Need at least one non-bankrupt player to reconcile");
             return;
         }
+        const topTaxedEarner = taxedPlayers.reduce((a, b) => nets[a] > nets[b] ? a : b);
         // Money is missing, fanum tax each non-bankrupt player
-        const fanumTaxPerPlayer = Math.floor(fanumTaxTotal / reconciliationEligiblePlayers.length);
-        reconciliationEligiblePlayers.forEach(player => {
+        const fanumTaxPerPlayer = Math.floor(fanumTaxTotal / taxedPlayers.length);
+        taxedPlayers.forEach(player => {
             tables[tableId].transactions.push({
                 player,
                 amount: fanumTaxPerPlayer,
@@ -45,10 +51,10 @@ async function reconcileTableRoute(req, res, next) {
                 reconciliation: true,
             });
         });
-        const fanumTaxLeftover = fanumTaxTotal % reconciliationEligiblePlayers.length;
+        const fanumTaxLeftover = fanumTaxTotal % taxedPlayers.length;
         // Fanum tax the biggest winner the extra amount, in case it doesn't divide equally
         tables[tableId].transactions.push({
-            player: topEarner,
+            player: topTaxedEarner,
             amount: fanumTaxLeftover,
             timestamp: new Date().toISOString(),
             reconciliation: true,

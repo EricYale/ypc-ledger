@@ -80,3 +80,9 @@
         background-color: lighten(shared.$bg-color, 20%);
     }
 }
+
+.reconcile_choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
