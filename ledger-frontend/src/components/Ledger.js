@@ -32,6 +32,14 @@ const CheckToggle = ({ table, player, onUpdate }) => {
 
 const Ledger = ({ table, admin, onUpdate }) => {
     const ledger = createLedgerObject(table);
+    const normalizeEmail = email => email.toLowerCase().trim();
+    const emailCounts = {};
+    ledger.forEach(player => {
+        const email = normalizeEmail(player.email);
+        emailCounts[email] = (emailCounts[email] || 0) + 1;
+    });
+    const isDuplicate = player => emailCounts[normalizeEmail(player.email)] > 1;
+
     const ledgerElems = ledger.map(player => {
         const photos = table.transactions
             .filter(i => i.player === player.id)
@@ -44,7 +52,7 @@ const Ledger = ({ table, admin, onUpdate }) => {
         return (
             <tr key={player.id}>
                 {admin && <td><CheckToggle table={table} player={player} onUpdate={onUpdate} /></td>}
-                <td>{player.name}</td>
+                <td className={admin && isDuplicate(player) ? style.email_warning : ""}>{player.name}</td>
                 <td>{player.venmo} {player.zelle}</td>
                 <td className={player.email.toLowerCase().includes("@yale.edu") ? "" : style.email_warning}>{player.email}</td>
                 <td>${displayCents(player.in)}</td>
