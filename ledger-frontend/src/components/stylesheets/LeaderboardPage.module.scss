@@ -1,11 +1,11 @@
 @use "../../shared";
-@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap');
 
 #leaderboard_page {
     color: shared.$fg-color;
     text-align: center;
     min-height: 100vh;
-    background-image: linear-gradient(#52a8ff, #000047);
+    background-image:
+        linear-gradient(#1c3a1a, #0c1f0b 25%, #040a03 60%, #000);
     overflow-x: hidden;
 }
 
@@ -14,7 +14,9 @@
     @include shared.mobile {
         mask: linear-gradient(0,#0000 37px,#000 0), radial-gradient(37px,#000 calc(100% - 1px),#0000) bottom/68.45px 74px;
     }
-    background-image: linear-gradient(#adf8ff, #FFFFFF);
+    background-image:
+        radial-gradient(circle at 50% 38%, #ffd9a0 0, #ff3b1f 90px, rgba(255, 59, 31, 0.35) 100px, transparent 220px),
+        linear-gradient(#1a0526, #4a0f3d 50%, #ff7518);
     height: 50vh;
     display: flex;
     flex-direction: column;
@@ -24,9 +26,10 @@
 
     h1 {
         margin: 0;
-        color: #4800ff;
-        font-size: 48px;
-        font-family: 'Cherry Bomb One', cursive;
+        color: #0b0010;
+        font-size: 52px;
+        font-family: shared.$scream-font;
+        text-shadow: 0 0 20px #ff3b1f, 0 0 40px rgba(255, 117, 24, 0.8);
         @include shared.mobile {
             font-size: 28px;
             padding: 0 16px;
@@ -38,9 +41,10 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    color: #4800ff;
-    font-family: 'Cherry Bomb One', cursive;
-    font-size: 20px;
+    color: #0b0010;
+    font-family: shared.$spooky-font;
+    letter-spacing: 0.08em;
+    font-size: 24px;
     @include shared.mobile {
         gap: 8px;
         font-size: 15px;
@@ -49,15 +53,16 @@
 
 #sort_select {
     appearance: none;
-    font-family: 'Cherry Bomb One', cursive;
+    font-family: shared.$spooky-font;
+    letter-spacing: 0.08em;
     font-size: 20px;
-    color: #4800ff;
-    background-color: #ffffff;
-    border: 3px solid #4800ff;
+    color: shared.$pumpkin;
+    background-color: #1a0526;
+    border: 3px solid shared.$pumpkin;
     border-radius: 50px;
     padding: 10px 46px 10px 20px;
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234800ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23ff7518' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 18px center;
     background-size: 14px;
@@ -69,7 +74,7 @@
     }
     &:focus {
         outline: none;
-        box-shadow: 0 0 0 4px rgba(72, 0, 255, 0.25);
+        box-shadow: 0 0 0 4px rgba(255, 117, 24, 0.35);
     }
 }
 
@@ -110,13 +115,16 @@
     h3 {
         margin: 5px;
         text-transform: uppercase;
-        font-size: 16px;
+        font-size: 20px;
+        color: shared.$pumpkin;
+        text-shadow: 0 0 8px #000, 2px 2px 0 #000;
         @include shared.mobile {
             font-size: 13px;
         }
     }
     p {
         margin: 0;
+        text-shadow: 0 0 6px #000;
         font-size: 13px;
         @include shared.mobile {
             font-size: 11px;
@@ -130,7 +138,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: radial-gradient(circle, rgba(40, 0, 60, 0.7), rgba(0, 0, 0, 0.92));
     display: flex;
     justify-content: center;
     align-items: center;
@@ -138,12 +146,17 @@
 }
 
 #user_modal {
-    background-color: #fff;
+    background-color: shared.$bg-color;
     padding: 20px;
+    border: 3px solid shared.$slime;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 50px rgba(125, 255, 58, 0.35);
     min-width: 60vw;
-    color: #000000;
+    color: shared.$fg-color;
+    h1 {
+        color: shared.$slime;
+        text-shadow: 0 0 10px rgba(125, 255, 58, 0.6);
+    }
     @include shared.mobile {
         box-sizing: border-box;
         width: 92vw;

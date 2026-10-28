@@ -17,7 +17,9 @@
     padding: 9px 11px;
     cursor: pointer;
     &:hover {
-        background-color: lighten(shared.$bg-color, 20%);
+        background-color: shared.$pumpkin;
+        color: #1a0800;
+        transform: scale(1.1) rotate(-4deg);
     }
     @include shared.mobile {
         font-size: 14px;
@@ -29,6 +31,7 @@
     margin: 0 0 20px 0;
     font-size: 16px;
     color: lighten(shared.$bg-color, 70%);
+    font-style: italic;
     @include shared.mobile {
         font-size: 14px;
     }
@@ -117,7 +120,9 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 10px;
-    border-top: 1px shared.$fg-color solid;
+    border-top: 2px dashed shared.$pumpkin;
+    font-family: shared.$spooky-font;
+    letter-spacing: 0.05em;
     padding-top: 18px;
     font-size: 32px;
     @include shared.mobile {
@@ -149,6 +154,7 @@
     align-items: center;
     gap: 4px 12px;
     background-color: lighten(shared.$bg-color, 10%);
+    border-left: 5px solid shared.$pumpkin;
     border-radius: 10px;
     padding: 15px 18px;
     @include shared.mobile {
@@ -199,7 +205,7 @@
     padding: 8px 10px;
     cursor: pointer;
     &:hover {
-        color: #FF0000;
+        color: shared.$blood;
     }
 }
 
@@ -228,7 +234,8 @@
     }
 }
 .confirm_yes {
-    background-color: #FF0000;
+    background-color: shared.$blood;
+    box-shadow: 0 0 14px rgba(224, 17, 43, 0.6);
     color: shared.$fg-color;
 }
 .confirm_no {
@@ -237,19 +244,21 @@
 }
 
 .link {
-    color: #5555FF;
+    color: shared.$witch;
 }
 
 .error {
-    color: red;
+    color: shared.$blood;
     font-size: 16px;
 }
 
 .lost {
-    color: #FF0000;
+    color: shared.$blood;
+    text-shadow: 0 0 6px rgba(224, 17, 43, 0.7);
 }
 .won {
-    color: #00FF00;
+    color: shared.$slime;
+    text-shadow: 0 0 6px rgba(125, 255, 58, 0.7);
 }
 
 .remove_player {
@@ -262,7 +271,7 @@
     color: lighten(shared.$bg-color, 55%);
     cursor: pointer;
     &:hover {
-        color: #FF0000;
+        color: shared.$blood;
     }
 }
 

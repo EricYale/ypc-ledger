@@ -1,7 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Creepster&family=Nosifer&display=swap');
 
-$fg-color: #ffffff;
-$bg-color: #000000;
+$fg-color: #f4ead5;
+$bg-color: #120a1f;
+
+$pumpkin: #ff7518;
+$pumpkin-dark: #c2410c;
+$slime: #7dff3a;
+$blood: #e0112b;
+$witch: #b388ff;
+$candle: #ffd23f;
+
+$spooky-font: "Creepster", cursive;
+$scream-font: "Nosifer", cursive;
 
 $SMALL_DESKTOP_WIDTH: 1200px;
 $MOBILE_WIDTH: 1000px;

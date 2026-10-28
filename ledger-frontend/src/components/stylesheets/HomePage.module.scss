@@ -13,7 +13,18 @@
     }
 }
 
+@keyframes haunt {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-14px) rotate(1deg); }
+}
+
+@keyframes flicker {
+    0%, 19%, 22%, 62%, 64%, 100% { filter: drop-shadow(0 0 18px shared.$pumpkin) drop-shadow(0 0 40px rgba(255, 117, 24, 0.5)); }
+    20%, 63% { filter: drop-shadow(0 0 2px shared.$pumpkin); }
+}
+
 #logo {
+    animation: haunt 5s ease-in-out infinite, flicker 6s linear infinite;
     max-height: 20vh;
     max-width: 100%;
     margin-top: 5vh;
@@ -25,10 +36,12 @@
 }
 
 #create_table_button {
-    color: #FFFFFF77;
-    border: 3px solid #FFFFFF77;
-    border-style: dashed;
-    border-radius: 10px;
+    color: rgba(255, 117, 24, 0.7);
+    border: 3px dashed rgba(255, 117, 24, 0.7);
+    border-radius: 160px 160px 12px 12px / 90px 90px 12px 12px;
+    flex-direction: column;
+    gap: 10px;
+    transition: background-color 0.3s, color 0.3s;
     margin: 0px 0px 50px 0px;
     padding: 40px;
     display: flex;
@@ -43,12 +56,24 @@
         padding: 24px;
         margin-bottom: 24px;
     }
+    &::after {
+        content: "Dig a new grave";
+        font-family: shared.$spooky-font;
+        font-size: 24px;
+        letter-spacing: 0.1em;
+    }
+    &:hover {
+        color: shared.$pumpkin;
+        background-color: rgba(255, 117, 24, 0.08);
+    }
 }
 
 #create_table_modal {
     text-align: center;
     color: shared.$fg-color;
-    border: 3px solid shared.$fg-color;
+    background-color: rgba(18, 10, 31, 0.85);
+    border: 3px solid shared.$pumpkin;
+    box-shadow: 0 0 40px rgba(255, 117, 24, 0.35);
     border-radius: 10px;
     margin: 0px 0px 50px 0px;
     padding: 40px;
@@ -59,5 +84,5 @@
 }
 
 .error {
-    color: red;
+    color: shared.$blood;
 }

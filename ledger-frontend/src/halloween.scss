@@ -1,0 +1,156 @@
+@use "shared";
+
+html {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8E%83%3C/text%3E%3C/svg%3E") 6 6, auto;
+}
+
+a, button, select, [role="button"] {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E") 6 6, pointer;
+}
+
+body {
+    min-height: 100vh;
+    background-image:
+        radial-gradient(circle at 85% 9%, #fffbe6 0, #ffe9a8 55px, rgba(255, 140, 40, 0.35) 60px, rgba(255, 117, 24, 0.08) 160px, transparent 260px),
+        radial-gradient(1.5px 1.5px at 12% 18%, #fff 50%, transparent),
+        radial-gradient(1px 1px at 27% 8%, #fff 50%, transparent),
+        radial-gradient(2px 2px at 40% 30%, #ffe9a8 50%, transparent),
+        radial-gradient(1px 1px at 55% 12%, #fff 50%, transparent),
+        radial-gradient(1.5px 1.5px at 68% 40%, #fff 50%, transparent),
+        radial-gradient(1px 1px at 8% 55%, #fff 50%, transparent),
+        radial-gradient(2px 2px at 93% 48%, #fff 50%, transparent),
+        radial-gradient(1px 1px at 76% 22%, #fff 50%, transparent),
+        radial-gradient(1.5px 1.5px at 33% 62%, #fff 50%, transparent),
+        linear-gradient(to bottom, #07030d, shared.$bg-color 40%, #1f0b2e);
+    background-attachment: fixed;
+    color: shared.$fg-color;
+}
+
+h1, h2, h3 {
+    font-family: shared.$spooky-font;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+}
+
+h1 {
+    color: shared.$pumpkin;
+    text-shadow: 0 0 12px rgba(255, 117, 24, 0.7), 3px 3px 0 #000;
+}
+
+a {
+    color: shared.$pumpkin;
+    text-shadow: 0 0 8px rgba(255, 117, 24, 0.5);
+    &:hover {
+        color: shared.$slime;
+        text-shadow: 0 0 10px shared.$slime;
+    }
+}
+
+::selection {
+    background: shared.$pumpkin;
+    color: #000;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background: #07030d;
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(shared.$pumpkin, shared.$pumpkin-dark);
+    border-radius: 6px;
+    border: 2px solid #07030d;
+}
+
+@keyframes bat-flight-a {
+    0% { transform: translate(-10vw, 30vh) scale(0.8) rotate(-10deg); }
+    25% { transform: translate(25vw, 10vh) scale(1) rotate(8deg); }
+    50% { transform: translate(55vw, 25vh) scale(0.7) rotate(-6deg); }
+    75% { transform: translate(80vw, 5vh) scale(1.1) rotate(10deg); }
+    100% { transform: translate(110vw, 20vh) scale(0.8) rotate(-10deg); }
+}
+
+@keyframes bat-flight-b {
+    0% { transform: translate(110vw, 60vh) scale(0.6) scaleX(-1); }
+    30% { transform: translate(70vw, 45vh) scale(0.9) scaleX(-1); }
+    60% { transform: translate(35vw, 70vh) scale(0.5) scaleX(-1); }
+    100% { transform: translate(-10vw, 40vh) scale(0.8) scaleX(-1); }
+}
+
+@keyframes flap {
+    from { margin-top: 0; }
+    to { margin-top: 12px; }
+}
+
+body::before, body::after {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    pointer-events: none;
+    font-size: 42px;
+    filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.9));
+}
+
+body::before {
+    content: "🦇";
+    animation: bat-flight-a 17s linear infinite, flap 0.25s ease-in-out infinite alternate;
+}
+
+body::after {
+    content: "🦇 🦇";
+    font-size: 26px;
+    animation: bat-flight-b 23s linear infinite 4s, flap 0.2s ease-in-out infinite alternate;
+    transform: translate(-20vw, 0);
+}
+
+@keyframes drift {
+    from { background-position: 0 100%, 0 100%, 0 100%; }
+    to { background-position: 1200px 100%, -800px 100%, 600px 100%; }
+}
+
+@keyframes ghost-float {
+    0% { transform: translate(-15vw, 0) rotate(-5deg); opacity: 0; }
+    10% { opacity: 0.55; }
+    50% { transform: translate(50vw, -40px) rotate(6deg); opacity: 0.35; }
+    90% { opacity: 0.55; }
+    100% { transform: translate(115vw, 0) rotate(-5deg); opacity: 0; }
+}
+
+#root::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 35vh;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        radial-gradient(ellipse 45% 70% at 50% 100%, rgba(200, 180, 230, 0.18), transparent),
+        radial-gradient(ellipse 45% 85% at 50% 100%, rgba(170, 150, 210, 0.15), transparent),
+        radial-gradient(ellipse 45% 60% at 50% 100%, rgba(220, 200, 255, 0.14), transparent);
+    background-size: 1200px 100%, 800px 100%, 600px 100%;
+    background-repeat: repeat-x;
+    animation: drift 60s linear infinite;
+}
+
+#root::after {
+    content: "👻";
+    position: fixed;
+    left: 0;
+    bottom: 12vh;
+    z-index: -1;
+    pointer-events: none;
+    font-size: 70px;
+    animation: ghost-float 40s ease-in-out infinite 8s;
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before, body::after, #root::before, #root::after {
+        animation: none;
+        display: none;
+    }
+}

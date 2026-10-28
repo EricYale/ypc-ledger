@@ -16,7 +16,7 @@ async function createTableRoute(req, res, next) {
 
     const id = createTable({
         eventName: eventName,
-        gameType: "NLH",
+        gameType: "DLC",
         tableNumber,
         smallBlind,
         bigBlind,

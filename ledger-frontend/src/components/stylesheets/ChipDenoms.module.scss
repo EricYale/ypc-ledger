@@ -28,7 +28,13 @@
         font-size: 14px;
     }
 }
+@keyframes chip-spin {
+    from { transform: rotateY(0); }
+    to { transform: rotateY(360deg); }
+}
+
 .chip_image {
+    animation: chip-spin 4s linear infinite;
     width: 80px;
     @include shared.mobile {
         width: 56px;
@@ -40,5 +46,5 @@
         margin-right: 5px;
     }
     text-decoration: none;
-    color: #adadff;
+    color: shared.$witch;
 }

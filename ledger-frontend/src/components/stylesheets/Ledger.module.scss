@@ -9,10 +9,23 @@
 #ledger_table {
     margin-top: 50px;
     width: 100%;
+    background-color: rgba(18, 10, 31, 0.8);
+    box-shadow: 0 0 30px rgba(255, 117, 24, 0.25);
     &, & th, & td {
         padding: 7px;
-        border: 1px solid shared.$fg-color;
+        border: 1px solid rgba(255, 117, 24, 0.5);
         border-collapse: collapse;
+    }
+    & th {
+        font-family: shared.$spooky-font;
+        font-weight: 400;
+        font-size: 1.2em;
+        letter-spacing: 0.08em;
+        color: shared.$pumpkin;
+        background-color: #24103a;
+    }
+    & tr:hover td {
+        background-color: rgba(179, 136, 255, 0.1);
     }
     @include shared.mobile {
         font-size: 13px;
@@ -24,19 +37,21 @@
     }
 }
 .lost {
-    color: #FF0000;
+    color: shared.$blood;
+    text-shadow: 0 0 6px rgba(224, 17, 43, 0.7);
 }
 .won {
-    color: #00FF00;
+    color: shared.$slime;
+    text-shadow: 0 0 6px rgba(125, 255, 58, 0.7);
 }
 
 .link {
     margin-left: 7px;
-    color: #5555FF;
+    color: shared.$witch;
 }
 
 .email_warning {
-    color: #ffd900;
+    color: shared.$candle;
 }
 
 .check {
@@ -48,7 +63,8 @@
     color: shared.$fg-color;
     opacity: 0.25;
     &.checked {
-        color: #00FF00;
+        color: shared.$slime;
+        text-shadow: 0 0 8px shared.$slime;
         opacity: 1;
     }
 }

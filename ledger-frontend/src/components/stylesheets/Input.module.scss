@@ -24,7 +24,7 @@
 .input {
     font-family: "Nunito Sans", sans-serif;
     background-color: lighten(shared.$bg-color, 10%);
-    border: none;
+    border: 2px solid rgba(179, 136, 255, 0.25);
     border-radius: 10px;
     color: shared.$fg-color;
     padding: 20px 15px;
@@ -44,6 +44,8 @@
     &:focus {
         outline: none;
         background-color: lighten(shared.$bg-color, 18%);
+        border-color: shared.$pumpkin;
+        box-shadow: 0 0 18px rgba(255, 117, 24, 0.5);
     }
     &.large {
         width: 60%;

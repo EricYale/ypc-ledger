@@ -6,4 +6,28 @@
     @include shared.mobile {
         height: 260px;
     }
+    :global {
+        .recharts-cartesian-grid line {
+            stroke: rgba(179, 136, 255, 0.25);
+        }
+        .recharts-cartesian-axis-tick-value {
+            fill: shared.$fg-color;
+        }
+        .recharts-reference-line line {
+            stroke: shared.$blood;
+            stroke-width: 2;
+        }
+        .recharts-line-curve {
+            stroke: shared.$pumpkin;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 4px shared.$pumpkin);
+        }
+        .recharts-active-dot circle {
+            fill: shared.$slime;
+        }
+        .recharts-default-tooltip {
+            background-color: #1a0526 !important;
+            border-color: shared.$pumpkin !important;
+        }
+    }
 }
