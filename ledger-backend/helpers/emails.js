@@ -35,6 +35,50 @@ async function sendEmail(to, subject, body) {
     await ses.send(sendCommand);
 }
 
+const FONT = "'Roboto Flex', Roboto, 'Helvetica Neue', Arial, sans-serif";
+const COLORS = {
+    background: "#F3F5FB",
+    surface: "#FFFFFF",
+    surfaceContainer: "#EEF1F8",
+    outline: "#E2E5EE",
+    onSurface: "#1A1C21",
+    onSurfaceVariant: "#44474F",
+    primaryContainer: "#D7E3FF",
+    onPrimaryContainer: "#001B3F",
+    winContainer: "#C3EFCC",
+    onWinContainer: "#00210D",
+    lossContainer: "#FFDAD6",
+    onLossContainer: "#410002",
+};
+
+const PAGE_STYLE = `background-color: ${COLORS.background}; color: ${COLORS.onSurface}; font-family: ${FONT}; text-align: center; padding: 48px 16px;`;
+const LOGO_STYLE = "max-width: 50%; max-height: 120px; margin: 16px 0 40px 0;";
+const TITLE_STYLE = "font-size: 32px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; margin: 0 0 16px 0;";
+const TABLE_CHIP_STYLE = `display: inline-block; background-color: ${COLORS.primaryContainer}; color: ${COLORS.onPrimaryContainer}; font-size: 16px; font-weight: 600; border-radius: 100px; padding: 8px 20px; margin: 0 0 32px 0;`;
+const CARD_STYLE = `background-color: ${COLORS.surface}; border-radius: 32px; padding: 28px 24px; margin: 16px auto; max-width: 600px; text-align: left;`;
+const CARD_TITLE_STYLE = "font-size: 22px; font-weight: 600; margin: 0 0 16px 0;";
+const BODY_TEXT_STYLE = `color: ${COLORS.onSurfaceVariant}; font-size: 15px; line-height: 1.5;`;
+const LIST_STYLE = `${BODY_TEXT_STYLE} margin: 0; padding-left: 20px;`;
+const LIST_ITEM_STYLE = "margin-bottom: 8px;";
+const STATS_CARD_STYLE = `${CARD_STYLE} text-align: center; padding: 16px;`;
+const STAT_TILE_STYLE = `display: inline-block; vertical-align: top; width: 160px; margin: 6px; padding: 20px 8px; border-radius: 24px; background-color: ${COLORS.surfaceContainer};`;
+const STAT_LABEL_STYLE = "text-transform: uppercase; font-weight: 600; font-size: 12px; letter-spacing: 0.8px; margin: 0; opacity: 0.8;";
+const STAT_VALUE_STYLE = "font-size: 36px; font-weight: 700; letter-spacing: -1px; margin: 6px 0 0 0;";
+const CELL_STYLE = `padding: 12px 8px; border-bottom: 1px solid ${COLORS.outline}; font-size: 14px; text-align: left;`;
+const HEADER_CELL_STYLE = `padding: 8px; border-bottom: 1px solid ${COLORS.outline}; font-size: 12px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: ${COLORS.onSurfaceVariant}; text-align: left;`;
+
+function netTileStyle(playerNet) {
+    const background = playerNet >= 0 ? COLORS.winContainer : COLORS.lossContainer;
+    const color = playerNet >= 0 ? COLORS.onWinContainer : COLORS.onLossContainer;
+    return `${STAT_TILE_STYLE} border-radius: 40px; background-color: ${background}; color: ${color};`;
+}
+
+function netPillStyle(lost) {
+    const background = lost ? COLORS.lossContainer : COLORS.winContainer;
+    const color = lost ? COLORS.onLossContainer : COLORS.onWinContainer;
+    return `display: inline-block; padding: 4px 12px; border-radius: 100px; font-weight: 600; background-color: ${background}; color: ${color};`;
+}
+
 function generateLedger(table) {
     let tr = "";
     
@@ -57,27 +101,27 @@ function generateLedger(table) {
 
         tr += `
             <tr>
-                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">${player.name}</td>
-                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">${player.venmo} ${player.zelle}</td>
-                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">${player.email}</td>
-                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">$${displayCents(player.in)}</td>
-                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">$${displayCents(-player.out)}</td>
-                <td style="padding: 7px; border: 1px solid #777777; border-collapse: collapse; color: ${player.amount > 0 ? "red" : "green"};">
-                    $${displayCents(-player.amount)}
+                <td style="${CELL_STYLE}">${player.name}</td>
+                <td style="${CELL_STYLE}">${player.venmo} ${player.zelle}</td>
+                <td style="${CELL_STYLE}">${player.email}</td>
+                <td style="${CELL_STYLE}">$${displayCents(player.in)}</td>
+                <td style="${CELL_STYLE}">$${displayCents(-player.out)}</td>
+                <td style="${CELL_STYLE}">
+                    <span style="${netPillStyle(player.amount > 0)}">$${displayCents(-player.amount)}</span>
                 </td>
             </tr>
         `;
     }
 
     const ret = `
-        <table style="width: 100%;">
+        <table style="width: 100%; border-collapse: collapse; color: ${COLORS.onSurface};">
             <tr>
-                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Name</th>
-                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Venmo/Zelle</th>
-                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Email</th>
-                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">In</th>
-                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Out</th>
-                <th style="padding: 7px; border: 1px solid #777777; border-collapse: collapse;">Net</th>
+                <th style="${HEADER_CELL_STYLE}">Name</th>
+                <th style="${HEADER_CELL_STYLE}">Venmo/Zelle</th>
+                <th style="${HEADER_CELL_STYLE}">Email</th>
+                <th style="${HEADER_CELL_STYLE}">In</th>
+                <th style="${HEADER_CELL_STYLE}">Out</th>
+                <th style="${HEADER_CELL_STYLE}">Net</th>
             </tr>
             ${tr}
         </table>
@@ -99,43 +143,51 @@ async function sendEmailsForPrebank(table) {
 
         const body = `
             <html>
-                <body style="text-align: center; font-family: 'Lato', sans-serif;">
+            <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;600;700&display=swap" rel="stylesheet" />
+            </head>
+            <body style="margin: 0; padding: 0; background-color: ${COLORS.background};">
+                <div style="${PAGE_STYLE}">
                     <img
                         src="https://storage.googleapis.com/ypc-static/logo_black.png"
                         alt="Yale Poker Club"
-                        style="max-width: 50%; max-height: 20%; margin: 70px 0;"
+                        style="${LOGO_STYLE}"
                     />
-                    <h2>Thanks for playing at ${table.eventName}</h2>
-                    <h3 style="margin-bottom: 50px;">Table ${table.tableNumber}</h3>
-                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
-                        <div style="display: inline-block; margin-right: 50px;">
-                            <p style="text-transform: uppercase; font-weight: bold; font-size: 12px;">IN FOR</p>
-                            <p style="font-size: 40px; margin: 10px;">$${displayCents(ins[playerId])}</p>
+                    <h2 style="${TITLE_STYLE}">Thanks for playing at ${table.eventName}</h2>
+                    <h3 style="${TABLE_CHIP_STYLE}">Table ${table.tableNumber}</h3>
+                    <div style="${STATS_CARD_STYLE}">
+                        <div style="${STAT_TILE_STYLE}">
+                            <p style="${STAT_LABEL_STYLE}">IN FOR</p>
+                            <p style="${STAT_VALUE_STYLE}">$${displayCents(ins[playerId])}</p>
                         </div>
-                        <div style="display: inline-block; margin-right: 50px;">
-                            <p style="text-transform: uppercase; font-weight: bold; font-size: 12px;">OUT FOR</p>
-                            <p style="font-size: 40px; margin: 10px;">$${displayCents(outs[playerId])}</p>
+                        <div style="${STAT_TILE_STYLE}">
+                            <p style="${STAT_LABEL_STYLE}">OUT FOR</p>
+                            <p style="${STAT_VALUE_STYLE}">$${displayCents(outs[playerId])}</p>
                         </div>
-                        <div style="display: inline-block;">
-                            <p style="text-transform: uppercase; font-weight: bold; font-size: 12px;">
+                        <div style="${netTileStyle(playerNet)}">
+                            <p style="${STAT_LABEL_STYLE}">
                                 ${playerNet >= 0 ? "Total earnings" : "Total losses"}
                             </p>
-                            <p style="font-size: 40px; margin: 10px; color: ${playerNet >= 0 ? "#00BB00" : "#FF0000"}">$${displayCents(Math.abs(playerNet))}</p>
+                            <p style="${STAT_VALUE_STYLE}">$${displayCents(Math.abs(playerNet))}</p>
                         </div>
                     </div>
-                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
-                        <h3>Banking</h3>
-                        <p>
+                    <div style="${CARD_STYLE}">
+                        <h3 style="${CARD_TITLE_STYLE}">Banking</h3>
+                        <p style="${BODY_TEXT_STYLE}">
                             ${playerNet > 0 ? "Expect a Venmo to arrive from the banker. No action is required." : "No action is required."}
                         </p>
-                        ${playerReconciledMoneyRemoved ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
-                        ${playerReconciledMoneyAdded ? "<p>This ledger had a discrepancy resulting in extra money in the system. Since you were the biggest winner, you were awarded the difference. It's your lucky day!</p>" : ""}
+                        ${playerReconciledMoneyRemoved ? `<p style="${BODY_TEXT_STYLE}">This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>` : ""}
+                        ${playerReconciledMoneyAdded ? `<p style="${BODY_TEXT_STYLE}">This ledger had a discrepancy resulting in extra money in the system. Since you were the biggest winner, you were awarded the difference. It's your lucky day!</p>` : ""}
                     </div>
-                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
-                        <h3>Ledger</h3>
-                        ${ledgerString}
+                    <div style="${CARD_STYLE}">
+                        <h3 style="${CARD_TITLE_STYLE}">Ledger</h3>
+                        <div style="overflow-x: auto;">
+                            ${ledgerString}
+                        </div>
                     </div>
-                </body>
+                </div>
+            </body>
             </html>
         `;
         await sendEmail(player.email, subject, body);
@@ -169,7 +221,7 @@ function venmoPayButton(sender, recipient, amountCents) {
     return `
         <a
             href="${url}"
-            style="display: inline-block; margin-left: 8px; padding: 4px 12px; background-color: #008CFF; color: #FFFFFF; border-radius: 6px; text-decoration: none; font-weight: bold; vertical-align: middle;"
+            style="display: inline-block; margin-left: 8px; padding: 6px 16px; background-color: #008CFF; color: #FFFFFF; border-radius: 100px; text-decoration: none; font-weight: 600; vertical-align: middle;"
         >
             <img
                 src="https://storage.googleapis.com/ypc-static/venmo-icon-white.png"
@@ -199,7 +251,7 @@ async function sendEmailsForTransfer(table) {
         const senderPaymentApp = getPaymentMethod(sender, i.method);
         const recipientPaymentApp = getPaymentMethod(recipient, i.method);
 
-        allTransactionsString += `<li>${sender.name} (${senderPaymentApp}) pays ${recipient.name} (${recipientPaymentApp}) $${displayCents(i.amount)}</li>`;
+        allTransactionsString += `<li style="${LIST_ITEM_STYLE}">${sender.name} (${senderPaymentApp}) pays ${recipient.name} (${recipientPaymentApp}) $${displayCents(i.amount)}</li>`;
     })
 
     for(const playerId of Object.keys(table.players)) {
@@ -215,61 +267,69 @@ async function sendEmailsForTransfer(table) {
             const paymentApp = getPaymentMethod(recipient, i.method);
             const payButton = i.method === "zelle" ? "" : venmoPayButton(player, recipient, i.amount);
 
-            transfers += `<li style="margin-bottom: 8px;">Please send <b>$${displayCents(i.amount)}</b> to <b>${recipient.name}</b>: <b>${paymentApp}</b>.${payButton}</li>`;
+            transfers += `<li style="${LIST_ITEM_STYLE}">Please send <b>$${displayCents(i.amount)}</b> to <b>${recipient.name}</b>: <b>${paymentApp}</b>.${payButton}</li>`;
         });
         transactions.filter(i => i.recipient === playerId).forEach(i => {
             const sender = table.players[i.sender];
             const paymentApp = getPaymentMethod(sender, i.method);
             
-            transfers += `<li>Expect a transfer of <b>$${displayCents(i.amount)}</b> from <b>${sender.name}</b>: <b>${paymentApp}</b>.</li>`;
+            transfers += `<li style="${LIST_ITEM_STYLE}">Expect a transfer of <b>$${displayCents(i.amount)}</b> from <b>${sender.name}</b>: <b>${paymentApp}</b>.</li>`;
         });
-        if(transfers.length === 0) transfers = "<li>No action is required.</li>";
+        if(transfers.length === 0) transfers = `<li style="${LIST_ITEM_STYLE}">No action is required.</li>`;
 
         const body = `
             <html>
-                <body style="text-align: center; font-family: 'Lato', sans-serif;">
+            <head>
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;600;700&display=swap" rel="stylesheet" />
+            </head>
+            <body style="margin: 0; padding: 0; background-color: ${COLORS.background};">
+                <div style="${PAGE_STYLE}">
                     <img
                         src="https://storage.googleapis.com/ypc-static/logo_black.png"
                         alt="Yale Poker Club"
-                        style="max-width: 50vw; max-height: 20vh; margin: 70px 0;"
+                        style="${LOGO_STYLE}"
                     />
-                    <h2>Thanks for playing at ${table.eventName}</h2>
-                    <h3 style="margin-bottom: 50px;">Table ${table.tableNumber}</h3>
-                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
-                        <div style="display: inline-block; margin-right: 50px;">
-                            <p style="text-transform: uppercase; font-weight: bold; font-size: 12px;">IN FOR</p>
-                            <p style="font-size: 40px; margin: 10px;">$${displayCents(ins[playerId])}</p>
+                    <h2 style="${TITLE_STYLE}">Thanks for playing at ${table.eventName}</h2>
+                    <h3 style="${TABLE_CHIP_STYLE}">Table ${table.tableNumber}</h3>
+                    <div style="${STATS_CARD_STYLE}">
+                        <div style="${STAT_TILE_STYLE}">
+                            <p style="${STAT_LABEL_STYLE}">IN FOR</p>
+                            <p style="${STAT_VALUE_STYLE}">$${displayCents(ins[playerId])}</p>
                         </div>
-                        <div style="display: inline-block; margin-right: 50px;">
-                            <p style="text-transform: uppercase; font-weight: bold; font-size: 12px;">OUT FOR</p>
-                            <p style="font-size: 40px; margin: 10px;">$${displayCents(outs[playerId])}</p>
+                        <div style="${STAT_TILE_STYLE}">
+                            <p style="${STAT_LABEL_STYLE}">OUT FOR</p>
+                            <p style="${STAT_VALUE_STYLE}">$${displayCents(outs[playerId])}</p>
                         </div>
-                        <div style="display: inline-block;">
-                            <p style="text-transform: uppercase; font-weight: bold; font-size: 12px;">
+                        <div style="${netTileStyle(playerNet)}">
+                            <p style="${STAT_LABEL_STYLE}">
                                 ${playerNet >= 0 ? "Total earnings" : "Total losses"}
                             </p>
-                            <p style="font-size: 40px; margin: 10px; color: ${playerNet >= 0 ? "#00BB00" : "#FF0000"}">$${displayCents(Math.abs(playerNet))}</p>
+                            <p style="${STAT_VALUE_STYLE}">$${displayCents(Math.abs(playerNet))}</p>
                         </div>
                     </div>
-                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
-                        <h3>Banking</h3>
-                        <ul style="display: inline-block;">
+                    <div style="${CARD_STYLE}">
+                        <h3 style="${CARD_TITLE_STYLE}">Banking</h3>
+                        <ul style="${LIST_STYLE}">
                             ${transfers}
                         </ul>
-                        ${playerReconciledMoneyRemoved ? "<p>This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>" : ""}
-                        ${playerReconciledMoneyAdded ? "<p>This ledger had a discrepancy resulting in extra money in the system. Since you were the biggest winner, you were awarded the difference. It's your lucky day!</p>" : ""}
+                        ${playerReconciledMoneyRemoved ? `<p style="${BODY_TEXT_STYLE}">This ledger had a discrepancy. Your balance was adjusted to reconcile the difference, which was split evenly amongst players. We deeply apologize; if you have any questions, ask a YPC officer.</p>` : ""}
+                        ${playerReconciledMoneyAdded ? `<p style="${BODY_TEXT_STYLE}">This ledger had a discrepancy resulting in extra money in the system. Since you were the biggest winner, you were awarded the difference. It's your lucky day!</p>` : ""}
                     </div>
-                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
-                        <h3>Ledger</h3>
-                        ${ledgerString}
+                    <div style="${CARD_STYLE}">
+                        <h3 style="${CARD_TITLE_STYLE}">Ledger</h3>
+                        <div style="overflow-x: auto;">
+                            ${ledgerString}
+                        </div>
                     </div>
-                    <div style="border: 1px black solid; margin: 50px auto; max-width: 75%; border-radius: 15px;">
-                        <h3>Transfers</h3>
-                        <ul style="display: inline-block;">
+                    <div style="${CARD_STYLE}">
+                        <h3 style="${CARD_TITLE_STYLE}">Transfers</h3>
+                        <ul style="${LIST_STYLE}">
                             ${allTransactionsString}
                         </ul>
                     </div>
-                </body>
+                </div>
+            </body>
             </html>
         `;
         await sendEmail(player.email, subject, body);
