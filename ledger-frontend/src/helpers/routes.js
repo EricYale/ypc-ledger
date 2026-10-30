@@ -5,6 +5,7 @@ import TableNumberRedirectPage from "../components/TableNumberRedirectPage";
 import TablePage from "../components/TablePage";
 import LeaderboardPage from "../components/LeaderboardPage";
 import EmailsPage from "../components/EmailsPage";
+import PrizePage from "../components/PrizePage";
 
 const ROUTES = [
     {
@@ -14,6 +15,10 @@ const ROUTES = [
     {
         path: "/sharks",
         element: <LeaderboardPage />,
+    },
+    {
+        path: "/prize",
+        element: <PrizePage />,
     },
     {
         path: "/table/:id",
