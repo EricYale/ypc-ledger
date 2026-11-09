@@ -18,12 +18,11 @@ async function reconcileTableRoute(req, res, next) {
         .filter(id => outs[id] > 0)
         .filter(id => nets[id] !== 0);
 
-    if(reconciliationEligiblePlayers.length === 0) {
+    if(reconciliationEligiblePlayers.length === 0 && !uncheckedOnly) {
         res.status(200).send("No eligible players to reconcile");
         return;
     }
 
-    const topEarner = reconciliationEligiblePlayers.reduce((a, b) => nets[a] > nets[b] ? a : b);
     const fanumTaxTotal = Object.values(nets).reduce((acc, curr) => acc + curr, 0);
 
     if(fanumTaxTotal === 0) {
@@ -32,11 +31,11 @@ async function reconcileTableRoute(req, res, next) {
     }
     if(fanumTaxTotal > 0) {
         const taxedPlayers = uncheckedOnly
-            ? reconciliationEligiblePlayers.filter(id => !table.players[id].checked)
+            ? Object.keys(table.players).filter(id => !table.players[id].checked)
             : reconciliationEligiblePlayers;
         if(taxedPlayers.length === 0) {
             res.status(500).send(uncheckedOnly
-                ? "Need at least one non-bankrupt unchecked player to reconcile"
+                ? "Need at least one unchecked player to reconcile"
                 : "Need at least one non-bankrupt player to reconcile");
             return;
         }
@@ -60,6 +59,11 @@ async function reconcileTableRoute(req, res, next) {
             reconciliation: true,
         });
     } else {
+        if(reconciliationEligiblePlayers.length === 0) {
+            res.status(200).send("No eligible players to reconcile");
+            return;
+        }
+        const topEarner = reconciliationEligiblePlayers.reduce((a, b) => nets[a] > nets[b] ? a : b);
         // Extra money in the table, give it all to the top earner
         tables[tableId].transactions.push({
             player: topEarner,

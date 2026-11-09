@@ -65,6 +65,7 @@ const STAT_TILE_STYLE = `display: inline-block; vertical-align: top; width: 160p
 const STAT_LABEL_STYLE = "text-transform: uppercase; font-weight: 600; font-size: 12px; letter-spacing: 0.8px; margin: 0; opacity: 0.8;";
 const STAT_VALUE_STYLE = "font-size: 36px; font-weight: 700; letter-spacing: -1px; margin: 6px 0 0 0;";
 const CELL_STYLE = `padding: 12px 8px; border-bottom: 1px solid ${COLORS.outline}; font-size: 14px; text-align: left;`;
+const TABLE_ID_STYLE = `color: ${COLORS.onSurfaceVariant}; font-size: 10px; opacity: 0.5; margin: 32px 0 0 0;`;
 const HEADER_CELL_STYLE = `padding: 8px; border-bottom: 1px solid ${COLORS.outline}; font-size: 12px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: ${COLORS.onSurfaceVariant}; text-align: left;`;
 
 function netTileStyle(playerNet) {
@@ -186,6 +187,7 @@ async function sendEmailsForPrebank(table) {
                             ${ledgerString}
                         </div>
                     </div>
+                    <p style="${TABLE_ID_STYLE}">${table.id}</p>
                 </div>
             </body>
             </html>
@@ -328,6 +330,7 @@ async function sendEmailsForTransfer(table) {
                             ${allTransactionsString}
                         </ul>
                     </div>
+                    <p style="${TABLE_ID_STYLE}">${table.id}</p>
                 </div>
             </body>
             </html>

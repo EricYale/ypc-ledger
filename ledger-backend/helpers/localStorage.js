@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const uuid = require("uuid").v4;
 const userHelper = require("./user-helper");
+const { generateTableId } = require("./tableId");
 
 const tables = {
     /*
-    "2024-10-31_20_abcdef": {
+    "banana-donkey-axolotl": {
         "id": string,
         "eventName": "Friday Night Live",
         "gameType": "No-limit Hold'Em",
@@ -151,9 +151,7 @@ function saveUser(id) {
 }
 
 function createTable({ eventName, gameType, tableNumber, smallBlind, bigBlind, bankingMode, bankerVenmo, bankerZelle, denominations, startingStack }) {
-    const dateStr = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-    const randomUUID = uuid();
-    const id = `${dateStr}_${smallBlind}-${bigBlind}_${randomUUID}`;
+    const id = generateTableId(new Set(Object.keys(tables)));
 
     tables[id] = {
         id,
